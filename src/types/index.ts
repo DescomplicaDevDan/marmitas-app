@@ -5,5 +5,5 @@ export interface Marmita {
   preco: number;
   imagem: string;
   // Atualizado com as suas novas categorias
-  categoria: 'Carne' | 'Frango' | 'Peixe' | 'Suíno' | 'Combo'; 
+  categoria: 'Carne' | 'Frango' | 'Peixe' | 'Suíno' | 'Vegetariana' | 'Combo'; 
 }

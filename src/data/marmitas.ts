@@ -88,8 +88,126 @@ export const marmitas: Marmita[] = [
     preco: 18.00,
     imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
     categoria: "Peixe"
-  }
-    
-  
-  
+  },
+  {
+    id: 12,
+    nome: "Escondidinho com Carne",
+    descricao: "Escondidinho de batata doce com carne de patinho e arroz 7 grãos.",
+    preco: 18.00,
+    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    categoria: "Carne"
+  },
+  {
+    id: 13,
+    nome: "Escondidinho com frango",
+    descricao: "Escondidinho de batata doce com frango e arroz 7 grãos.",
+    preco: 18.00,
+    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    categoria: "Frango"
+  },
+
+  {
+    id: 14,
+    nome: "Escondidinho com carne do sol",
+    descricao: "Escondidinho de batata doce com carne do sol e arroz 7 grãos.",
+    preco: 18.00,
+    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    categoria: "Carne"
+  },
+  {
+    id: 15,
+    nome: "Sobrecoxa com arroz integral",
+    descricao: "Sobrecoxa de frango desossada com arroz integral 7 grãos, feijão, cenoura, ervilha e brócolis.",
+    preco: 18.00,
+    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    categoria: "Frango"
+  },
+  {
+    id: 16,
+    nome: "Strogonoff de grão de bico",
+    descricao: "Strogonoff de grão de bico com arroz 7 grãos e batata doce grelhada.",
+    preco: 18.00,
+    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    categoria: "Vegetariana"
+  },
+  {
+    id: 17,
+    nome: "Filé de peixe",
+    descricao: "Filé de peixe com arroz 7 grãos, cenoura, ervilha e brócolis.",
+    preco: 18.00,
+    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    categoria: "Peixe"
+  },
+  {
+    id: 18,
+    nome: "Frango desfiado",
+    descricao: "Frango desfiado com arroz 7 grãos e legumes.",
+    preco: 18.00,
+    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    categoria: "Frango"
+  },
+  {
+    id: 19,
+    nome: "Carne desfiada",
+    descricao: "carne de patinho desfiado com arroz 7 grãos e legumes.",
+    preco: 18.00,
+    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    categoria: "Carne"
+  },
+  {
+    id: 20,
+    nome: "Frango em crosta",
+    descricao: "Frango em crosta com purê de mandioquinha e brócolis.",
+    preco: 18.00,
+    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    categoria: "Frango"
+  },
+  {
+    id: 21,
+    nome: "Panqueca integral com carne",
+    descricao: "Panqueca integral com carne de patinho.",
+    preco: 18.00,
+    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    categoria: "Carne"
+  },
+  {
+    id: 22,
+    nome: "Panqueca integral com frango",
+    descricao: "Panqueca integral com frango.",
+    preco: 18.00,
+    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    categoria: "Frango"
+  },
+  {
+    id: 23,
+    nome: "Strogonoff de frango",
+    descricao: "Strogonoff de frango com arroz 7 grão e batata doce grelhada.",
+    preco: 18.00,
+    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    categoria: "Frango"
+  },
+  {
+    id: 24,
+    nome: "Combo 10un",
+    descricao: "",
+    preco: 180.00,
+    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    categoria: "Combo"
+  },
+  {
+    id: 25,
+    nome: "Combo 20un",
+    descricao: "",
+    preco: 320.00,
+    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    categoria: "Combo"
+  },
+  {
+    id: 26,
+    nome: "Combo 30un",
+    descricao: "",
+    preco: 440.00,
+    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    categoria: "Combo"
+  },
 ]; 
