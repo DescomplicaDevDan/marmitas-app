@@ -1,12 +1,13 @@
 import { type Marmita } from '../types';
 
+
 export const marmitas: Marmita[] = [
   {
     id: 1,
     nome: "Almôndega de carne",
     descricao: "Almôndega de carne com macarrão integral.",
     preco: 18.00,
-    imagem: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=500",
+    imagem: "/combo-marmitas.png",
     categoria: "Carne"
   },
   {
@@ -14,7 +15,7 @@ export const marmitas: Marmita[] = [
     nome: "Almôndega de frango",
     descricao: "Almôndega de frago com macarrão integral.",
     preco: 18.00,
-    imagem: "https://images.unsplash.com/photo-1594000199161-0fe2bc40fe8d?q=80&w=500",
+    imagem: "/combo-marmitas.png",
     categoria: "Frango"
   },
   {
@@ -22,7 +23,7 @@ export const marmitas: Marmita[] = [
     nome: "Arroz 7 grãos com frango",
     descricao: "Arroz 7 grãos com purê de mandioquinha e frango.",
     preco: 18.00,
-    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    imagem: "/combo-marmitas.png",
     categoria: "Frango"
   },
   {
@@ -30,7 +31,7 @@ export const marmitas: Marmita[] = [
     nome: "Arroz 7 grãos com carne",
     descricao: "Arroz 7 grãos com purê de mandioquinha e carne.",
     preco: 18.00,
-    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    imagem: "/combo-marmitas.png",
     categoria: "Carne"
   },
   {
@@ -38,7 +39,7 @@ export const marmitas: Marmita[] = [
     nome: "Burguer de patinho",
     descricao: "Burguer de patinho com arroz 7 grãos e legumes.",
     preco: 18.00,
-    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    imagem: "/combo-marmitas.png",
     categoria: "Carne"
   },
   {
@@ -46,7 +47,7 @@ export const marmitas: Marmita[] = [
     nome: "Burguer de frango",
     descricao: "Burguer de frango com arroz 7 grãos e legumes.",
     preco: 18.00,
-    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    imagem: "/combo-marmitas.png",
     categoria: "Frango"
   },
   {
@@ -54,7 +55,7 @@ export const marmitas: Marmita[] = [
     nome: "Filé mignon suíno",
     descricao: "Filé mignon suíno ao molho de laranja.",
     preco: 18.00,
-    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    imagem: "/combo-marmitas.png",
     categoria: "Suíno"
   },
   {
@@ -62,7 +63,7 @@ export const marmitas: Marmita[] = [
     nome: "Lombo de porco assado",
     descricao: "Lombo de porco assado com legumes e arroz.",
     preco: 18.00,
-    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    imagem: "/combo-marmitas.png",
     categoria: "Suíno"
   },
   {
@@ -70,7 +71,7 @@ export const marmitas: Marmita[] = [
     nome: "Isca de carne",
     descricao: "Isca de carne de patinho com Arroz 7 grãos e lentilha.",
     preco: 18.00,
-    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    imagem: "/combo-marmitas.png",
     categoria: "Carne"
   },
   {
@@ -78,7 +79,7 @@ export const marmitas: Marmita[] = [
     nome: "Isca de frango",
     descricao: "Isca de frango com arroz 7 grãos e lentilha.",
     preco: 18.00,
-    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    imagem: "/combo-marmitas.png",
     categoria: "Frango"
   },
   {
@@ -86,7 +87,7 @@ export const marmitas: Marmita[] = [
     nome: "Isca de peixe",
     descricao: "Isca de peixe com arroz, feijão e legumes.",
     preco: 18.00,
-    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    imagem: "/combo-marmitas.png",
     categoria: "Peixe"
   },
   {
@@ -94,7 +95,7 @@ export const marmitas: Marmita[] = [
     nome: "Escondidinho com Carne",
     descricao: "Escondidinho de batata doce com carne de patinho e arroz 7 grãos.",
     preco: 18.00,
-    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    imagem: "/combo-marmitas.png",
     categoria: "Carne"
   },
   {
@@ -102,7 +103,7 @@ export const marmitas: Marmita[] = [
     nome: "Escondidinho com frango",
     descricao: "Escondidinho de batata doce com frango e arroz 7 grãos.",
     preco: 18.00,
-    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    imagem: "/combo-marmitas.png",
     categoria: "Frango"
   },
 
@@ -111,7 +112,7 @@ export const marmitas: Marmita[] = [
     nome: "Escondidinho com carne do sol",
     descricao: "Escondidinho de batata doce com carne do sol e arroz 7 grãos.",
     preco: 18.00,
-    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    imagem: "/combo-marmitas.png",
     categoria: "Carne"
   },
   {
@@ -119,7 +120,7 @@ export const marmitas: Marmita[] = [
     nome: "Sobrecoxa com arroz integral",
     descricao: "Sobrecoxa de frango desossada com arroz integral 7 grãos, feijão, cenoura, ervilha e brócolis.",
     preco: 18.00,
-    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    imagem: "/combo-marmitas.png",
     categoria: "Frango"
   },
   {
@@ -127,7 +128,7 @@ export const marmitas: Marmita[] = [
     nome: "Strogonoff de grão de bico",
     descricao: "Strogonoff de grão de bico com arroz 7 grãos e batata doce grelhada.",
     preco: 18.00,
-    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    imagem: "/combo-marmitas.png",
     categoria: "Vegetariana"
   },
   {
@@ -135,7 +136,7 @@ export const marmitas: Marmita[] = [
     nome: "Filé de peixe",
     descricao: "Filé de peixe com arroz 7 grãos, cenoura, ervilha e brócolis.",
     preco: 18.00,
-    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    imagem: "/combo-marmitas.png",
     categoria: "Peixe"
   },
   {
@@ -143,7 +144,7 @@ export const marmitas: Marmita[] = [
     nome: "Frango desfiado",
     descricao: "Frango desfiado com arroz 7 grãos e legumes.",
     preco: 18.00,
-    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    imagem: "/combo-marmitas.png",
     categoria: "Frango"
   },
   {
@@ -151,7 +152,7 @@ export const marmitas: Marmita[] = [
     nome: "Carne desfiada",
     descricao: "carne de patinho desfiado com arroz 7 grãos e legumes.",
     preco: 18.00,
-    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    imagem: "/combo-marmitas.png",
     categoria: "Carne"
   },
   {
@@ -159,7 +160,7 @@ export const marmitas: Marmita[] = [
     nome: "Frango em crosta",
     descricao: "Frango em crosta com purê de mandioquinha e brócolis.",
     preco: 18.00,
-    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    imagem: "/combo-marmitas.png",
     categoria: "Frango"
   },
   {
@@ -167,7 +168,7 @@ export const marmitas: Marmita[] = [
     nome: "Panqueca integral com carne",
     descricao: "Panqueca integral com carne de patinho.",
     preco: 18.00,
-    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    imagem: "/combo-marmitas.png",
     categoria: "Carne"
   },
   {
@@ -175,7 +176,7 @@ export const marmitas: Marmita[] = [
     nome: "Panqueca integral com frango",
     descricao: "Panqueca integral com frango.",
     preco: 18.00,
-    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    imagem: "/combo-marmitas.png",
     categoria: "Frango"
   },
   {
@@ -183,7 +184,7 @@ export const marmitas: Marmita[] = [
     nome: "Strogonoff de frango",
     descricao: "Strogonoff de frango com arroz 7 grão e batata doce grelhada.",
     preco: 18.00,
-    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    imagem: "/combo-marmitas.png",
     categoria: "Frango"
   },
   {
@@ -191,7 +192,7 @@ export const marmitas: Marmita[] = [
     nome: "Combo 10un",
     descricao: "",
     preco: 180.00,
-    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    imagem: "/combo-marmitas.png",
     categoria: "Combo"
   },
   {
@@ -199,7 +200,7 @@ export const marmitas: Marmita[] = [
     nome: "Combo 20un",
     descricao: "",
     preco: 320.00,
-    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    imagem: "/combo-marmitas.png",
     categoria: "Combo"
   },
   {
@@ -207,7 +208,7 @@ export const marmitas: Marmita[] = [
     nome: "Combo 30un",
     descricao: "",
     preco: 440.00,
-    imagem: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500",
+    imagem: "/combo-marmitas.png",
     categoria: "Combo"
   },
 ]; 
