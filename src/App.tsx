@@ -2,6 +2,7 @@ import { MarmitaCard } from './components/MarmitaCard';
 import { Cart } from './components/Cart';
 import { marmitas } from './data/marmitas';
 import { useCart } from './contexts/CartContext';
+import logo from './assets/Logo.png';
 
 function App() {
   const { totalItems } = useCart();
@@ -9,17 +10,27 @@ function App() {
   return (
     
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm py-6 mb-8 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold text-orange-600 italic">NUTRICOMP</h1>
-            <p className="text-gray-500 text-sm">Alimentação Saudável e Prática</p>
+      <header className="bg-white shadow-sm pt-6 pb-2 mb-8 sticky top-0 z-50 border-b border-gray-100">
+        {/* Removi o min-h e ajustei o padding interno */}
+        <div className="max-w-7xl mx-auto px-4 relative flex items-center justify-center">
+          
+          {/* LOGO: Centralizado */}
+          <div className="flex justify-center transition-all duration-300">
+            <img 
+              src={logo} 
+              alt="Nutricomp - Companhia de Nutrição" 
+              className="h-24 lg:h-36 w-auto object-contain" 
+            />
           </div>
           
-          {/* 3. O "Contador" do Carrinho aparecendo aqui! */}
-          <div className="bg-orange-100 text-orange-700 px-4 py-2 rounded-full font-bold">
-            🛒 Itens: {totalItems}
+          {/* CARRINHO: Flutuando à direita */}
+          <div className="absolute right-4 top-1/2 -translate-y-1/2">
+            <div className="bg-[#e9f5e1] text-[#59853a] px-4 py-2 rounded-full font-bold shadow-sm border border-[#d1e7c5] flex items-center gap-2 hover:scale-105 transition-transform cursor-pointer whitespace-nowrap">
+              <span className="text-xl">🛒</span>
+              <span className="text-sm lg:text-base">Itens: {totalItems}</span>
+            </div>
           </div>
+
         </div>
       </header>
 
