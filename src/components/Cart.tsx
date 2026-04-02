@@ -12,33 +12,50 @@ export function Cart() {
       <h2 className="text-xl font-bold mb-4 text-gray-800">Meu Pedido</h2>
       
       <div className="space-y-4">
-        {cart.map(item => (
-          <div key={item.id} className="flex justify-between items-center border-b pb-2">
-            <div className="flex-1">
-              <h4 className="font-medium text-gray-800">{item.nome}</h4>
-              <p className="text-sm text-gray-500">{(item.preco * item.quantidade).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+        {/* ADICIONAMOS ISSO: Começo do mapeamento do carrinho */}
+        {cart.map((item) => (
+          <div key={item.id} className="flex flex-col border-b pb-3">
+            {/* 1. LINHA DE CIMA: Nome, Preço e Botões */}
+            <div className="flex justify-between items-center">
+              <div className="flex-1">
+                <h4 className="font-bold text-gray-800">{item.nome}</h4>
+                <p className="text-sm text-[#59853a] font-semibold">
+                  {(item.preco * item.quantidade).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                </p>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={() => updateQuantity(item.id, 'decrease')}
+                  className="w-7 h-7 flex items-center justify-center bg-gray-100 rounded-lg font-bold"
+                >-</button>
+                <span className="font-bold w-4 text-center text-sm">{item.quantidade}</span>
+                <button 
+                  onClick={() => updateQuantity(item.id, 'increase')}
+                  className="w-7 h-7 flex items-center justify-center bg-[#7cb151] rounded-lg text-white font-bold"
+                >+</button>
+                <button 
+                  onClick={() => removeFromCart(item.id)}
+                  className="ml-2 text-red-400 text-xs font-bold"
+                >Remover</button>
+              </div>
             </div>
-            
-            <div className="flex items-center gap-2">
-              <button 
-                onClick={() => updateQuantity(item.id, 'decrease')}
-                className="w-8 h-8 flex items-center justify-center bg-gray-200 rounded-full hover:bg-gray-300"
-              >-</button>
-              
-              <span className="font-bold w-4 text-center">{item.quantidade}</span>
-              
-              <button 
-                onClick={() => updateQuantity(item.id, 'increase')}
-                className="w-8 h-8 flex items-center justify-center bg-gray-200 rounded-full hover:bg-gray-300"
-              >+</button>
-              
-              <button 
-                onClick={() => removeFromCart(item.id)}
-                className="ml-2 text-red-500 hover:text-red-700 text-sm font-bold"
-              >Remover</button>
-            </div>
+
+            {/* 2. LINHA DE BAIXO: O Detalhamento do Combo */}
+            {item.escolhas && item.escolhas.length > 0 && (
+              <div className="mt-2 bg-[#f9fbf7] p-2 rounded-lg border border-dashed border-[#d1e7c5]">
+                <p className="text-[10px] font-black text-[#59853a] uppercase mb-1">Composição:</p>
+                {item.escolhas.map((esc) => (
+                  <div key={esc.id} className="flex justify-between text-[11px] text-gray-600">
+                    <span>• {esc.nome}</span>
+                    <span className="font-bold text-gray-800">{esc.quantidade} un.</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        ))}
+        ))} 
+        {/* FIM DO MAPEAMENTO */}
       </div>
 
       <div className="mt-6 border-t pt-4">
@@ -46,7 +63,7 @@ export function Cart() {
           <span>Total:</span>
           <span>{totalPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
         </div>
-        <button className="w-full mt-4 bg-green-600 text-white py-3 rounded-xl font-bold hover:bg-green-700 transition-colors">
+        <button className="w-full mt-4 bg-[#7cb151] text-white py-3 rounded-xl font-bold hover:bg-[#59853a] transition-colors">
           Finalizar Pedido via WhatsApp
         </button>
       </div>
