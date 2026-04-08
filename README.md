@@ -1,73 +1,52 @@
-# React + TypeScript + Vite
+# 🥗 Nutricomp - Meal Delivery System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A **Nutricomp** é uma aplicação de alta performance para gerenciamento de pedidos de marmitas fitness. O projeto foca em uma experiência de usuário (UX) fluida, utilizando **React** e **TypeScript** para garantir um código escalável, tipado e livre de erros em tempo de execução.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Tecnologias Utilizadas
 
-## React Compiler
+* **React 18**: Biblioteca principal para construção da interface baseada em componentes.
+* **TypeScript**: Tipagem estática para maior segurança e produtividade no desenvolvimento.
+* **Tailwind CSS**: Estilização baseada em utilitários para um design responsivo e performático.
+* **Context API**: Gerenciamento de estado global para o ecossistema do carrinho e checkout.
+* **Lucide React**: Biblioteca de ícones vetoriais.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🛠️ Arquitetura e Funcionalidades Técnicas
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 1. Sistema de Combos Dinâmicos
+Implementação de lógica para montagem de combos personalizados. O sistema valida a quantidade de itens escolhidos dentro de um modal e gera um **ID único** dinâmico (`isCombo ? id-timestamp : id`) no carrinho. Isso permite que múltiplos combos com composições diferentes coexistam sem conflitos de estado.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 2. State Management (Context API)
+Utilização de um `CartProvider` customizado que encapsula toda a lógica de negócio do carrinho:
+* Cálculo automático de totais e sub-totais via `reduce`.
+* Controle de persistência e atualização de quantidades.
+* Interface de controle para o fluxo de exibição condicional do checkout.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 3. Layout Independente & Sticky Aside
+Domínio de **CSS Flexbox** para criar uma barra lateral (Aside) que não é influenciada pela altura da coluna principal:
+* Uso de `items-start` no container pai para quebrar o estiramento automático das colunas.
+* Aplicação de `sticky` combinado com `max-h` e `overflow-y-auto`, garantindo que o carrinho e o formulário permaneçam acessíveis enquanto o usuário navega por longas listas de produtos.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### 4. Integração com WhatsApp API
+Algoritmo de formatação de strings para exportação de dados complexos:
+* Conversão do estado do carrinho e metadados de entrega (CEP, Número, Forma de Pagamento) em uma mensagem estruturada e codificada (`encodeURIComponent`) para a API do WhatsApp.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 5. Formulário de Checkout e Validação
+* Interface `CheckoutFormData` para garantir a integridade dos dados coletados.
+* Validação de campos obrigatórios e tratamento de dados sensíveis para entrega.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🏗️ Estrutura de Pastas
+
+```text
+src/
+ ├── assets/          # Ativos estáticos (Logos e Imagens)
+ ├── components/      # Componentes de UI reaproveitáveis (Atômicos)
+ ├── contexts/        # Contextos da aplicação (CartContext)
+ ├── data/            # Mock de dados e constantes de produtos
+ ├── types/           # Interfaces e tipos globais do TypeScript
+ └── App.tsx          # Componente principal e orquestrador de layout
