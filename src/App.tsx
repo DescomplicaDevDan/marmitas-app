@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MarmitaCard } from './components/MarmitaCard';
 import { Cart } from './components/Cart';
 import { CheckoutForm } from './components/CheckoutForm';
@@ -12,6 +12,12 @@ function App() {
   const { totalItems, addToCart } = useCart();
   const [comboSendoMontado, setComboSendoMontado] = useState<Marmita | null>(null);
   const [mostrarCheckout, setMostrarCheckout] = useState(false);
+
+  useEffect(() => {
+    if (totalItems === 0) {
+      setMostrarCheckout(false);
+    }
+  }, [totalItems]);
 
   const handleConfirmarCombo = (escolhas: EscolhaCombo[]) => {
     if (comboSendoMontado) {
@@ -44,7 +50,6 @@ function App() {
         </div>
       </header>
 
-      {/* ADICIONADO 'items-start' AQUI NO MAIN - ISSO SOLTA O ASIDE DO MAIN */}
       <main className="max-w-7xl mx-auto px-4 pb-12 flex flex-col lg:flex-row gap-8 items-start">
         
         <div className="flex-1">
@@ -59,7 +64,6 @@ function App() {
           </div>
         </div>
         
-        {/* ASIDE AGORA É 100% INDEPENDENTE */}
         <aside className="w-full lg:w-96 flex flex-col gap-6 lg:sticky lg:top-40 lg:max-h-[calc(100vh-180px)] overflow-y-auto pr-2 custom-scrollbar">
           <Cart onFinalizar={() => setMostrarCheckout(true)} checkoutAberto={mostrarCheckout} />
           {mostrarCheckout && <CheckoutForm />}

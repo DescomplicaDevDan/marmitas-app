@@ -1,6 +1,5 @@
 import { useCart } from '../contexts/CartContext';
 
-// 1. Definimos o que o Cart precisa receber do App.tsx
 interface CartProps {
   onFinalizar: () => void;
   checkoutAberto: boolean;

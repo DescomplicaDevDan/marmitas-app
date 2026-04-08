@@ -3,10 +3,8 @@ import { useCart } from '../contexts/CartContext';
 import type { CheckoutFormData, CartItem } from '../types';
 
 export function CheckoutForm() {
-  // Puxamos tudo o que o formulário precisa do contexto
   const { cart, totalItems, totalPrice, clearCart } = useCart();
 
-  // Estado inicial do formulário
   const [formData, setFormData] = useState<CheckoutFormData>({
     nome: '',
     telefone: '',
@@ -19,59 +17,47 @@ export function CheckoutForm() {
     observacoes: ''
   });
 
+  // 1. COLOQUE ESTA FUNÇÃO AQUI (AUXILIAR DE LIMPEZA)
+  const apenasNumeros = (valor: string) => valor.replace(/\D/g, '');
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Telefone que vai receber o pedido (ajuste se necessário)
     const telefoneDono = "5522992090717"; 
 
-    // 1. Monta a lista de itens para o texto do WhatsApp
     const listaItens = cart.map((item: CartItem) => {
-      let texto = `• ${item.quantidade}x ${item.nome}`;
-      
+      let texto = `- ${item.quantidade}x *${item.nome}*`;
       if (item.categoria === 'Combo' && item.escolhas) {
-        const escolhas = item.escolhas.map((esc: any) => `  └ ${esc.quantidade}x ${esc.nome}`).join('\n');
+        const escolhas = item.escolhas.map((esc: any) => `   . ${esc.quantidade}x ${esc.nome}`).join('\n');
         texto += `\n${escolhas}`;
       }
       return texto;
     }).join('\n\n');
 
-    // 2. Monta a mensagem final
-    const mensagem = encodeURIComponent(
-`*Novo Pedido - Nutricomp* 🥗
+    const textoPedido = 
+      `*NOVO PEDIDO - NUTRICOMP*\n\n` +
+      `Ola! Gostaria de finalizar meu pedido:\n\n` +
+      `*CLIENTE:* ${formData.nome}\n` +
+      `*WhatsApp:* ${formData.telefone}\n\n` +
+      `--- \n` +
+      `*ITENS DO PEDIDO:*\n${listaItens}\n\n` +
+      `--- \n` +
+      `*TOTAL:* R$ ${totalPrice.toFixed(2)}\n` +
+      `*FORMA DE PAGAMENTO:* ${formData.formaPagamento.toUpperCase()}\n\n` +
+      `*ENDERECO DE ENTREGA:*\n` +
+      `${formData.endereco}, n ${formData.nº}\n` +
+      `${formData.bairro} - ${formData.cidade}\n` +
+      `*CEP:* ${formData.cep}\n\n` +
+      `${formData.observacoes ? `*OBSERVACAO:* ${formData.observacoes}\n\n` : ''}` +
+      `*Aguardando o valor do frete para confirmar o pedido.*`;
 
-*Cliente:* ${formData.nome}
-*WhatsApp:* ${formData.telefone}
-
-*Itens do Pedido:*
-${listaItens}
-
-*Total:* R$ ${totalPrice.toFixed(2)}
-*Pagamento:* ${formData.formaPagamento}
-
-*Endereço:*
-CEP: ${formData.cep}
-${formData.endereco}, nº ${formData.nº} - ${formData.bairro}
-*Cidade:* ${formData.cidade}
-
-⚠️ *O valor do frete será calculado e informado aqui no chat.*
-
-${formData.observacoes ? `\n*Obs:* ${formData.observacoes}` : ''}`
-    );
-
-    // 3. Abre o WhatsApp
+    const mensagem = encodeURIComponent(textoPedido);
     window.open(`https://wa.me/${telefoneDono}?text=${mensagem}`, '_blank');
+    
     clearCart();
     setFormData({
-      nome: '',
-      telefone: '',
-      endereco: '',
-      nº: '',
-      cep: '',
-      bairro: '',
-      cidade: 'São Paulo',
-      formaPagamento: 'pix',
-      observacoes: ''
+      nome: '', telefone: '', endereco: '', nº: '', cep: '',
+      bairro: '', cidade: 'São Paulo', formaPagamento: 'pix', observacoes: ''
     });
   };
 
@@ -88,43 +74,45 @@ ${formData.observacoes ? `\n*Obs:* ${formData.observacoes}` : ''}`
           onChange={e => setFormData({...formData, nome: e.target.value})}
         />
 
+        {/* 2. APLICAÇÃO NO TELEFONE (Máx 11 dígitos) */}
         <input 
           required
           type="tel"
-          placeholder="WhatsApp (22) 99999-9999"
+          placeholder="WhatsApp (apenas números)"
           value={formData.telefone}
           className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-[#7cb151]"
-          onChange={e => setFormData({...formData, telefone: e.target.value})}
+          onChange={e => setFormData({...formData, telefone: apenasNumeros(e.target.value).slice(0, 11)})}
         />
 
-        {/* Substitua o input de Endereço por este bloco de grid */}
         <div className="grid grid-cols-4 gap-2">
-        <div className="col-span-3">
+          <div className="col-span-3">
             <input 
-            required
-            placeholder="Endereço (Rua/Av)"
-            value={formData.endereco}
-            className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-[#7cb151]"
-            onChange={e => setFormData({...formData, endereco: e.target.value})}
+              required
+              placeholder="Endereço (Rua/Av)"
+              value={formData.endereco}
+              className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-[#7cb151]"
+              onChange={e => setFormData({...formData, endereco: e.target.value})}
             />
-        </div>
-        <div className="col-span-1">
+          </div>
+          {/* 3. APLICAÇÃO NO NÚMERO */}
+          <div className="col-span-1">
             <input 
-            required
-            placeholder="Nº"
-            value={formData.nº}
-            className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-[#7cb151]"
-            onChange={e => setFormData({...formData, nº: e.target.value})}
+              required
+              placeholder="Nº"
+              value={formData.nº}
+              className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-[#7cb151]"
+              onChange={e => setFormData({...formData, nº: apenasNumeros(e.target.value)})}
             />
-        </div>
+          </div>
         </div>
 
+        {/* 4. APLICAÇÃO NO CEP (Máx 8 dígitos) */}
         <input 
           required 
-          placeholder="CEP (00000-000)" 
+          placeholder="CEP (apenas números)" 
           value={formData.cep}
           className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-[#7cb151]" 
-          onChange={e => setFormData({...formData, cep: e.target.value})} 
+          onChange={e => setFormData({...formData, cep: apenasNumeros(e.target.value).slice(0, 8)})} 
         />
 
         <div className="grid grid-cols-2 gap-2">
@@ -157,16 +145,16 @@ ${formData.observacoes ? `\n*Obs:* ${formData.observacoes}` : ''}`
         <textarea 
           placeholder="Observações? (ex: sem cebola)" 
           value={formData.observacoes}
-          className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-[#7cb151] resize-none" 
+          className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-[#7cb151] resize-none h-24" 
           onChange={e => setFormData({...formData, observacoes: e.target.value})} 
         />
 
         <button 
           type="submit"
           disabled={totalItems === 0}
-          className="w-full bg-[#7cb151] hover:bg-[#59853a] disabled:bg-gray-300 text-white py-4 rounded-xl font-black text-lg transition-all"
+          className="w-full bg-[#7cb151] hover:bg-[#59853a] disabled:bg-gray-300 text-white py-4 rounded-xl font-black text-lg transition-all shadow-md active:scale-95"
         >
-          {totalItems === 0 ? 'Carrinho Vazio' : 'Confirmar e Enviar Pedido'}
+          {totalItems === 0 ? 'Carrinho Vazio' : 'Enviar Pedido via WhatsApp'}
         </button>
       </form>
     </div>
