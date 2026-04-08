@@ -1,6 +1,12 @@
 import { useCart } from '../contexts/CartContext';
 
-export function Cart() {
+// 1. Definimos o que o Cart precisa receber do App.tsx
+interface CartProps {
+  onFinalizar: () => void;
+  checkoutAberto: boolean;
+}
+
+export function Cart({ onFinalizar, checkoutAberto }: CartProps) {
   const { cart, removeFromCart, updateQuantity, totalPrice } = useCart();
 
   if (cart.length === 0) return (
@@ -12,10 +18,8 @@ export function Cart() {
       <h2 className="text-xl font-bold mb-4 text-gray-800">Meu Pedido</h2>
       
       <div className="space-y-4">
-        {/* ADICIONAMOS ISSO: Começo do mapeamento do carrinho */}
         {cart.map((item) => (
           <div key={item.id} className="flex flex-col border-b pb-3">
-            {/* 1. LINHA DE CIMA: Nome, Preço e Botões */}
             <div className="flex justify-between items-center">
               <div className="flex-1">
                 <h4 className="font-bold text-gray-800">{item.nome}</h4>
@@ -41,7 +45,6 @@ export function Cart() {
               </div>
             </div>
 
-            {/* 2. LINHA DE BAIXO: O Detalhamento do Combo */}
             {item.escolhas && item.escolhas.length > 0 && (
               <div className="mt-2 bg-[#f9fbf7] p-2 rounded-lg border border-dashed border-[#d1e7c5]">
                 <p className="text-[10px] font-black text-[#59853a] uppercase mb-1">Composição:</p>
@@ -54,8 +57,7 @@ export function Cart() {
               </div>
             )}
           </div>
-        ))} 
-        {/* FIM DO MAPEAMENTO */}
+        ))}
       </div>
 
       <div className="mt-6 border-t pt-4">
@@ -63,9 +65,16 @@ export function Cart() {
           <span>Total:</span>
           <span>{totalPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
         </div>
-        <button className="w-full mt-4 bg-[#7cb151] text-white py-3 rounded-xl font-bold hover:bg-[#59853a] transition-colors">
-          Finalizar Pedido via WhatsApp
-        </button>
+        
+        {/* 2. O BOTÃO SÓ APARECE SE O CHECKOUT NÃO ESTIVER ABERTO */}
+        {!checkoutAberto && (
+          <button 
+            onClick={onFinalizar}
+            className="w-full mt-4 bg-[#7cb151] text-white py-3 rounded-xl font-bold hover:bg-[#59853a] transition-all shadow-md active:scale-95"
+          >
+            Finalizar Pedido via WhatsApp
+          </button>
+        )}
       </div>
     </div>
   );

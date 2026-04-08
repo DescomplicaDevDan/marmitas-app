@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { MarmitaCard } from './components/MarmitaCard';
 import { Cart } from './components/Cart';
+import { CheckoutForm } from './components/CheckoutForm';
 import { marmitas } from './data/marmitas';
 import { useCart } from './contexts/CartContext';
 import { ComboModal } from './components/ComboModal';
@@ -9,18 +10,16 @@ import logo from './assets/Logo.png';
 
 function App() {
   const { totalItems, addToCart } = useCart();
-  
-  // Estado para controlar qual combo está sendo configurado
   const [comboSendoMontado, setComboSendoMontado] = useState<Marmita | null>(null);
+  const [mostrarCheckout, setMostrarCheckout] = useState(false);
 
-  // FUNÇÃO CORRIGIDA: Agora com nome e parâmetros certos
   const handleConfirmarCombo = (escolhas: EscolhaCombo[]) => {
     if (comboSendoMontado) {
       addToCart({
         ...comboSendoMontado,
-        escolhas // Injeta as marmitas selecionadas no item do carrinho
+        escolhas 
       });
-      setComboSendoMontado(null); // Fecha o modal
+      setComboSendoMontado(null);
     }
   };
   
@@ -45,26 +44,29 @@ function App() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 pb-12 flex flex-col lg:flex-row gap-8">
+      {/* ADICIONADO 'items-start' AQUI NO MAIN - ISSO SOLTA O ASIDE DO MAIN */}
+      <main className="max-w-7xl mx-auto px-4 pb-12 flex flex-col lg:flex-row gap-8 items-start">
+        
         <div className="flex-1">
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
             {marmitas.map((item) => (
               <MarmitaCard 
                 key={item.id} 
                 marmita={item} 
-                // Passamos a função para abrir o modal quando clicar no combo
                 onMontarCombo={(m) => setComboSendoMontado(m)} 
               />
             ))}
           </div>
         </div>
         
-        <aside className="w-full lg:w-96 sticky top-24 self-start">
-          <Cart />
+        {/* ASIDE AGORA É 100% INDEPENDENTE */}
+        <aside className="w-full lg:w-96 flex flex-col gap-6 lg:sticky lg:top-40 lg:max-h-[calc(100vh-180px)] overflow-y-auto pr-2 custom-scrollbar">
+          <Cart onFinalizar={() => setMostrarCheckout(true)} checkoutAberto={mostrarCheckout} />
+          {mostrarCheckout && <CheckoutForm />}
         </aside>
+
       </main>
 
-      {/* RENDERIZAÇÃO DO MODAL */}
       {comboSendoMontado && (
         <ComboModal 
           combo={comboSendoMontado}

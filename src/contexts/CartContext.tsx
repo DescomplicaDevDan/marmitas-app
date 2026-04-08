@@ -6,6 +6,7 @@ interface CartContextData {
   addToCart: (marmita: Marmita) => void;
   updateQuantity: (id: string, action: 'increase' | 'decrease') => void; // Mudamos para string
   removeFromCart: (id: string) => void; // Mudamos para string
+  clearCart: () => void;
   totalItems: number;
   totalPrice: number;
 }
@@ -59,11 +60,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const totalItems = cart.reduce((acc, item) => acc + item.quantidade, 0);
   const totalPrice = cart.reduce((acc, item) => acc + (item.preco * item.quantidade), 0);
 
+   function clearCart() {
+    setCart([]);
+  }  
+
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateQuantity, totalItems, totalPrice }}>
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateQuantity, clearCart, totalItems, totalPrice }}>
       {children}
     </CartContext.Provider>
   );
+
 }
 
 export const useCart = () => useContext(CartContext);
