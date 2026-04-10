@@ -70,7 +70,6 @@ function App() {
   };
 
   return (
-    // overflow-x-hidden aqui evita o transbordamento lateral da página toda
     <div className="min-h-screen bg-gray-50 overflow-x-hidden">
       <header className="bg-white shadow-sm pt-6 pb-2 mb-8 sticky top-0 z-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 relative flex items-center justify-center">
@@ -108,7 +107,8 @@ function App() {
 
         <div className="flex flex-col lg:flex-row gap-8 items-start">
           <div className="flex-1 w-full min-w-0">
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 justify-items-center">
+            {/* CORREÇÃO AQUI: Grid com items-stretch e sem justify-center para não quebrar a altura */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 items-stretch">
               {marmitasFiltradas.map((item) => (
                 <MarmitaCard 
                   key={item.id} 
@@ -121,7 +121,6 @@ function App() {
           
           <aside 
             id="carrinho-secao"
-            // w-full e overflow-hidden garantem que o checkout não vaze no mobile
             className="w-full lg:w-96 flex flex-col gap-6 lg:sticky lg:top-40 lg:max-h-[calc(100vh-180px)] overflow-y-auto lg:overflow-x-visible overflow-x-hidden pr-2 custom-scrollbar"
           >
             <Cart onFinalizar={handleFinalizar} checkoutAberto={mostrarCheckout} />
