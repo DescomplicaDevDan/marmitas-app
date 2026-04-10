@@ -1,9 +1,8 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'; // Adicionado useEffect
 import { type Marmita, type CartItem, type EscolhaCombo } from '../types';
 
 interface CartContextData {
   cart: CartItem[];
-  // ATUALIZADO: addToCart agora aceita opcionalmente as escolhas do combo
   addToCart: (marmita: Marmita, escolhas?: EscolhaCombo[]) => void;
   updateQuantity: (id: string, action: 'increase' | 'decrease') => void;
   removeFromCart: (id: string) => void;
@@ -14,15 +13,22 @@ interface CartContextData {
 
 const CartContext = createContext<CartContextData>({} as CartContextData);
 
-export function CartProvider({ children }: { children: ReactNode }) {
-  const [cart, setCart] = useState<CartItem[]>([]);
+const STORAGE_KEY = '@Nutricomp:cart';
 
-  // FUNÇÃO ÚNICA: Gerencia tanto itens simples quanto combos montados
+export function CartProvider({ children }: { children: ReactNode }) {
+  const [cart, setCart] = useState<CartItem[]>(() => {
+    const savedCart = localStorage.getItem(STORAGE_KEY);
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
+  }, [cart]);
+
   function addToCart(marmita: Marmita, escolhas?: EscolhaCombo[]) {
     setCart(prevCart => {
       const isCombo = marmita.categoria === 'Combo';
 
-      // Se NÃO for combo, verifica se já existe no carrinho para apenas somar a quantidade
       if (!isCombo) {
         const itemExists = prevCart.find(item => item.id === marmita.id);
         if (itemExists) {
@@ -32,16 +38,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
         }
       }
 
-      // Se for COMBO ou item novo:
-      // Geramos um ID único (Timestamp) para combos, permitindo ter dois combos de 10un 
-      // diferentes no mesmo carrinho sem que um sobrescreva o outro.
       const novoId = isCombo ? `${marmita.id}-${Date.now()}` : marmita.id;
 
       return [...prevCart, { 
         ...marmita, 
         id: String(novoId), 
         quantidade: 1, 
-        escolhas: escolhas // Aqui salvamos a montagem do combo (importante para o WhatsApp!)
+        escolhas: escolhas 
       }];
     });
   }
@@ -67,6 +70,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   function clearCart() {
     setCart([]);
+    localStorage.removeItem(STORAGE_KEY); // Limpa também o storage
   }
 
   const totalItems = cart.reduce((acc, item) => acc + item.quantidade, 0);
