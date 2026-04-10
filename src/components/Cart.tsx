@@ -17,44 +17,65 @@ export function Cart({ onFinalizar, checkoutAberto }: CartProps) {
       <h2 className="text-xl font-bold mb-4 text-gray-800">Meu Pedido</h2>
       
       <div className="space-y-4">
-        {cart.map((item) => (
-          <div key={item.id} className="flex flex-col border-b pb-3">
-            <div className="flex justify-between items-center">
-              <div className="flex-1">
-                <h4 className="font-bold text-gray-800">{item.nome}</h4>
-                <p className="text-sm text-[#59853a] font-semibold">
-                  {(item.preco * item.quantidade).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                </p>
-              </div>
-              
+      {cart.map((item) => (
+        <div key={item.id} className="flex flex-col border-b pb-3">
+          <div className="flex justify-between items-center">
+            <div className="flex-1">
+              <h4 className="font-bold text-gray-800">{item.nome}</h4>
+              <p className="text-sm text-[#59853a] font-semibold">
+                {(item.preco * item.quantidade).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+              </p>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={() => updateQuantity(item.id, 'decrease')}
+                className="w-7 h-7 flex items-center justify-center bg-gray-100 rounded-lg font-bold"
+              >-</button>
+              <span className="font-bold w-4 text-center text-sm">{item.quantidade}</span>
+              <button 
+                onClick={() => updateQuantity(item.id, 'increase')}
+                className="w-7 h-7 flex items-center justify-center bg-[#7cb151] rounded-lg text-white font-bold"
+              >+</button>
+              <button 
+                onClick={() => removeFromCart(item.id)}
+                className="ml-2 text-red-400 text-xs font-bold"
+              >Remover</button>
+            </div>
+          </div>
+
+          {/* COMPOSIÇÃO DO COMBO */}
+          {item.escolhas && item.escolhas.length > 0 && (
+            <div className="mt-2 bg-[#f9fbf7] p-2 rounded-lg border border-dashed border-[#d1e7c5]">
+              <p className="text-[10px] font-black text-[#59853a] uppercase mb-1">Composição:</p>
+              {item.escolhas.map((esc) => (
+                <div key={esc.id} className="flex justify-between text-[11px] text-gray-600">
+                  <span>• {esc.nome}</span>
+                  <span className="font-bold text-gray-800">{esc.quantidade} un.</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* --- IMPLEMENTAÇÃO: BRINDE DOURADO DESTACADO --- */}
+          {item.categoria === 'Combo' && (
+            <div className="mt-2 p-2 rounded-lg bg-gradient-to-r from-amber-50 to-yellow-100 border border-amber-200 shadow-sm animate-pulse">
               <div className="flex items-center gap-2">
-                <button 
-                  onClick={() => updateQuantity(item.id, 'decrease')}
-                  className="w-7 h-7 flex items-center justify-center bg-gray-100 rounded-lg font-bold"
-                >-</button>
-                <span className="font-bold w-4 text-center text-sm">{item.quantidade}</span>
-                <button 
-                  onClick={() => updateQuantity(item.id, 'increase')}
-                  className="w-7 h-7 flex items-center justify-center bg-[#7cb151] rounded-lg text-white font-bold"
-                >+</button>
-                <button 
-                  onClick={() => removeFromCart(item.id)}
-                  className="ml-2 text-red-400 text-xs font-bold"
-                >Remover</button>
+                <span className="text-base">🏆</span>
+                <div className="flex flex-col">
+                  <span className="text-[9px] font-black text-amber-700 uppercase tracking-tighter">
+                    Bônus de PROMOCIONAL
+                  </span>
+                  <span className="text-[11px] font-black text-amber-900 leading-tight">
+                    {item.nome.includes('10') ? '+1 Marmita Grátis (300g ou 350g)' : 
+                    item.nome.includes('20') ? '+2 Marmitas Grátis (300g ou 350g)' : 
+                    item.nome.includes('30') ? '+3 Marmitas Grátis (300g ou 350g)' : 
+                    'Brinde Especial Incluso'}
+                  </span>
+                </div>
               </div>
             </div>
-
-            {item.escolhas && item.escolhas.length > 0 && (
-              <div className="mt-2 bg-[#f9fbf7] p-2 rounded-lg border border-dashed border-[#d1e7c5]">
-                <p className="text-[10px] font-black text-[#59853a] uppercase mb-1">Composição:</p>
-                {item.escolhas.map((esc) => (
-                  <div key={esc.id} className="flex justify-between text-[11px] text-gray-600">
-                    <span>• {esc.nome}</span>
-                    <span className="font-bold text-gray-800">{esc.quantidade} un.</span>
-                  </div>
-                ))}
-              </div>
-            )}
+          )}
           </div>
         ))}
       </div>

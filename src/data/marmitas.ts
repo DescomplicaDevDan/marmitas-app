@@ -190,22 +190,31 @@ export const marmitas: Marmita[] = [
   {
     id: '24',
     nome: "Combo 10 unidades",
+    descricao: "Escolha 10 marmitas e GANHE +1 de 300g ou 350g",
     preco: 180.00,
     imagem: "/combo-marmitas.png",
-    categoria: "Combo"
+    categoria: "Combo",
+    limiteEscolhas: "10",
+    brinde: "1 marmita de 300 ou 350g"
   },
   {
     id: '25',
     nome: "Combo 20 unidades",
+    descricao: "Escolha 20 marmitas e GANHE +2 de 300g ou 350g",
     preco: 320.00,
     imagem: "/combo-marmitas.png",
-    categoria: "Combo"
+    categoria: "Combo",
+    limiteEscolhas: "20",
+    brinde: "2 marmita de 300g ou 350g"
   },
   {
     id: '26',
     nome: "Combo 30 unidades",
+    descricao: "Escolha 30 marmitas e GANHE +3 de 300g ou 350g",
     preco: 440.00,
     imagem: "/combo-marmitas.png",
-    categoria: "Combo"
+    categoria: "Combo",
+    limiteEscolhas: "30",
+    brinde: "3 marmita de 300g ou 350g"
   },
 ]; 

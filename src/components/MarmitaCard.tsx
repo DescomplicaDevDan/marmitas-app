@@ -21,8 +21,25 @@ export function MarmitaCard({ marmita, onMontarCombo }: MarmitaCardProps) {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all h-full flex flex-col">
+    /* MUDANÇA 1: Adicionado contorno verde quando for combo para destacar o card */
+    <div className={`bg-white rounded-2xl shadow-sm border overflow-hidden hover:shadow-md transition-all h-full flex flex-col relative ${
+      isCombo ? 'border-[#7cb151] ring-1 ring-[#7cb151]/20' : 'border-gray-100'
+    }`}>
       
+      {/* MUDANÇA 2: Adicionado o Selo Amarelo "GANHE" que pisca (animate-bounce) */}
+      {isCombo && (
+        <div className="absolute top-2 right-2 z-20 animate-bounce">
+          <div className="bg-[#facc15] text-[#854d0e] text-[10px] font-black px-2 py-1 rounded-lg shadow-md border border-[#eab308] flex flex-col items-center leading-none">
+            <span>GANHE</span>
+            <span>
+              {marmita.nome.includes('10') ? '+1 GRÁTIS' : 
+               marmita.nome.includes('20') ? '+2 GRÁTIS' : 
+               '+3 GRÁTIS'}
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* Imagem da Marmita */}
       <div className="relative h-48 w-full shrink-0">
         <img 
@@ -41,7 +58,6 @@ export function MarmitaCard({ marmita, onMontarCombo }: MarmitaCardProps) {
       <div className="p-5 flex-1 flex flex-col">
         <h3 className="font-bold text-gray-800 text-lg mb-1 leading-tight">{marmita.nome}</h3>
         
-        {/* Espaçamento fixo para descrição (alinha os cards vizinhos) */}
         <p className="text-gray-500 text-sm mb-4 line-clamp-2 h-15">
           {marmita.descricao}
         </p>
@@ -51,7 +67,6 @@ export function MarmitaCard({ marmita, onMontarCombo }: MarmitaCardProps) {
           isCombo ? 'flex-col items-start gap-3' : 'flex-row items-center justify-between gap-2'
         }`}>
           
-          {/* Preço em Preto (gray-900) */}
           <div className="flex flex-col">
             {isCombo && (
               <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">
@@ -63,7 +78,6 @@ export function MarmitaCard({ marmita, onMontarCombo }: MarmitaCardProps) {
             </span>
           </div>
 
-          {/* Lógica de Botão: Contador para marmitas / Botão Largo para combos */}
           {!isCombo && itemNoCarrinho ? (
             <div className="flex items-center gap-2 bg-[#e9f5e1] p-1 rounded-lg border border-[#d1e7c5]">
               <button 
@@ -79,10 +93,11 @@ export function MarmitaCard({ marmita, onMontarCombo }: MarmitaCardProps) {
               >+</button>
             </div>
           ) : (
+            /* MUDANÇA 3: Adicionado efeito de botão "3D" com borda inferior no Combo */
             <button 
               onClick={handleAcaoBotao}
               className={`bg-[#7cb151] hover:bg-[#59853a] text-white px-4 py-2.5 rounded-xl font-bold transition-all shadow-lg shadow-green-100 flex items-center justify-center gap-2 text-sm ${
-                isCombo ? 'w-full' : ''
+                isCombo ? 'w-full py-3.5 border-b-4 border-[#4d752d] active:border-b-0 active:translate-y-1' : ''
               }`}
             >
               {isCombo ? '📦 Montar meu Combo' : '🛒 Adicionar'}

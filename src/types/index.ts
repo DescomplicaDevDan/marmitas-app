@@ -4,6 +4,8 @@ export interface Marmita {
   descricao?: string;
   preco: number;
   imagem: string;
+  limiteEscolhas?: String;
+  brinde?: string;
   categoria: 'Carne' | 'Frango' | 'Peixe' | 'Suíno' | 'Vegetariana' | 'Combo'; 
   escolhas?: EscolhaCombo[];
 }

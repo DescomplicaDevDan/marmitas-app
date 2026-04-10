@@ -17,7 +17,6 @@ export function CheckoutForm() {
     observacoes: ''
   });
 
-  // 1. COLOQUE ESTA FUNÇÃO AQUI (AUXILIAR DE LIMPEZA)
   const apenasNumeros = (valor: string) => valor.replace(/\D/g, '');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -28,11 +27,20 @@ export function CheckoutForm() {
     const listaItens = cart.map((item: CartItem) => {
       let texto = `- ${item.quantidade}x *${item.nome}*`;
       if (item.categoria === 'Combo' && item.escolhas) {
-        const escolhas = item.escolhas.map((esc: any) => `   . ${esc.quantidade}x ${esc.nome}`).join('\n');
+        const escolhas = item.escolhas.map((esc: any) => `   └ ${esc.quantidade}x ${esc.nome}`).join('\n');
         texto += `\n${escolhas}`;
       }
       return texto;
     }).join('\n\n');
+
+    let resumoBrindes = "";
+  cart.forEach(item => {
+    if (item.categoria === 'Combo') {
+      if (item.nome.includes("10")) resumoBrindes += "1x Marmita de 350g (BRINDE)\n";
+      if (item.nome.includes("20")) resumoBrindes += "2x Marmitas de 350g (BRINDE)\n";
+      if (item.nome.includes("30")) resumoBrindes += "3x Marmitas de 350g (BRINDE)\n";
+    }
+  });
 
     const textoPedido = 
       `*NOVO PEDIDO - NUTRICOMP*\n\n` +
@@ -42,6 +50,7 @@ export function CheckoutForm() {
       `--- \n` +
       `*ITENS DO PEDIDO:*\n${listaItens}\n\n` +
       `--- \n` +
+      `${resumoBrindes ? `*ATENÇÃO COZINHA - BRINDES:* \n${resumoBrindes}\n--- \n` : ''}` +
       `*TOTAL:* R$ ${totalPrice.toFixed(2)}\n` +
       `*FORMA DE PAGAMENTO:* ${formData.formaPagamento.toUpperCase()}\n\n` +
       `*ENDERECO DE ENTREGA:*\n` +
