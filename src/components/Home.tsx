@@ -4,14 +4,12 @@ import { type Marmita } from '../types';
 import { CategoryFilter } from './CategoryFilter'; 
 import { MarmitaCard } from './MarmitaCard';
 import { ComboModal } from './ComboModal';
-// 1. IMPORTAR O HOOK DO CARRINHO
 import { useCart } from '../contexts/CartContext'; 
 
 export function Home() {
   const [selectedCategory, setSelectedCategory] = useState('Todos');
   const [comboParaMontar, setComboParaMontar] = useState<Marmita | null>(null);
   
-  // 2. EXTRAIR A FUNÇÃO ADDTOCART DO CONTEXTO
   const { addToCart } = useCart();
 
   const categorias = useMemo(() => {
@@ -63,7 +61,6 @@ export function Home() {
           marmitasDisponiveis={marmitas}
           onClose={() => setComboParaMontar(null)}
           onConfirm={(escolhas) => {
-            // Agora o addToCart está disponível e salvará as escolhas!
             addToCart(comboParaMontar, escolhas); 
             setComboParaMontar(null);
           }}

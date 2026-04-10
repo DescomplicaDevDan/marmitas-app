@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { type Marmita, type EscolhaCombo } from '../types';
-import { CategoryFilter } from './CategoryFilter'; // Certifique-se de que o caminho está correto
+import { CategoryFilter } from './CategoryFilter';
 
 interface Props {
   combo: Marmita;
@@ -10,22 +10,16 @@ interface Props {
 }
 
 export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: Props) {
-  // 1. Estados iniciais
   const [categoriaSelecionada, setCategoriaSelecionada] = useState('Todos');
   const [escolhas, setEscolhas] = useState<EscolhaCombo[]>([]);
 
-  // Extraímos o número de unidades (ex: "Combo 20un" -> 20)
   const metaUnidades = parseInt(combo.nome.replace(/\D/g, '')) || 10;
   const totalSelecionado = escolhas.reduce((sum, item) => sum + item.quantidade, 0);
 
-  // --- LÓGICA DE FILTRAGEM (O ITEM 2 QUE VOCÊ PEDIU) ---
-  
-  // 2. Criamos a lista de categorias para o filtro, removendo a categoria 'Combo'
-  const categoriasFiltro = Array.from(
+    const categoriasFiltro = Array.from(
     new Set(marmitasDisponiveis.filter(m => m.categoria !== 'Combo').map(m => m.categoria))
   );
 
-  // 3. Filtramos as marmitas que serão exibidas na lista de seleção
   const marmitasParaExibir = marmitasDisponiveis.filter(m => {
     const naoECombo = m.categoria !== 'Combo';
     const matchesFiltro = categoriaSelecionada === 'Todos' ? true : m.categoria === categoriaSelecionada;
@@ -39,7 +33,7 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
 
       if (existente) {
         const novaQtd = Math.max(0, existente.quantidade + delta);
-        if (totalSelecionado + delta > metaUnidades && delta > 0) return prev; // Trava no limite do combo
+        if (totalSelecionado + delta > metaUnidades && delta > 0) return prev;
         
         if (novaQtd === 0) return prev.filter(item => String(item.id) !== mId);
         return prev.map(item => String(item.id) === mId ? { ...item, quantidade: novaQtd } : item);

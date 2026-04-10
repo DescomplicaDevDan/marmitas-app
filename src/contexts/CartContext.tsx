@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'; // Adicionado useEffect
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import { type Marmita, type CartItem, type EscolhaCombo } from '../types';
 
 interface CartContextData {
@@ -70,7 +70,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   function clearCart() {
     setCart([]);
-    localStorage.removeItem(STORAGE_KEY); // Limpa também o storage
+    localStorage.removeItem(STORAGE_KEY);
   }
 
   const totalItems = cart.reduce((acc, item) => acc + item.quantidade, 0);

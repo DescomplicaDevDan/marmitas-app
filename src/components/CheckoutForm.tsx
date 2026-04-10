@@ -47,7 +47,7 @@ export function CheckoutForm() {
       `*NOVO PEDIDO - NUTRICOMP*\n\n` +
       `Olá! Gostaria de finalizar meu pedido:\n\n` +
       `*CLIENTE:* ${formData.nome}\n` +
-      `*CPF:* ${formData.CPF}\n` + // CPF ADICIONADO NA MENSAGEM
+      `*CPF:* ${formData.CPF}\n` +
       `*WhatsApp:* ${formData.telefone}\n\n` +
       `--- \n` +
       `*ITENS DO PEDIDO:*\n${listaItens}\n\n` +
