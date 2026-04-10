@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { type Marmita, type EscolhaCombo } from '../types';
+import { CategoryFilter } from './CategoryFilter'; // Certifique-se de que o caminho está correto
 
 interface Props {
   combo: Marmita;
@@ -9,92 +10,143 @@ interface Props {
 }
 
 export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: Props) {
-  // Extraímos o número de unidades (ex: "Combo 20un" -> 20)
-  const metaUnidades = parseInt(combo.nome.replace(/\D/g, '')) || 0;
+  // 1. Estados iniciais
+  const [categoriaSelecionada, setCategoriaSelecionada] = useState('Todos');
   const [escolhas, setEscolhas] = useState<EscolhaCombo[]>([]);
 
+  // Extraímos o número de unidades (ex: "Combo 20un" -> 20)
+  const metaUnidades = parseInt(combo.nome.replace(/\D/g, '')) || 10;
   const totalSelecionado = escolhas.reduce((sum, item) => sum + item.quantidade, 0);
 
-  const handleUpdateQuantidade = (marmita: Marmita, delta: number) => {
+  // --- LÓGICA DE FILTRAGEM (O ITEM 2 QUE VOCÊ PEDIU) ---
+  
+  // 2. Criamos a lista de categorias para o filtro, removendo a categoria 'Combo'
+  const categoriasFiltro = Array.from(
+    new Set(marmitasDisponiveis.filter(m => m.categoria !== 'Combo').map(m => m.categoria))
+  );
+
+  // 3. Filtramos as marmitas que serão exibidas na lista de seleção
+  const marmitasParaExibir = marmitasDisponiveis.filter(m => {
+    const naoECombo = m.categoria !== 'Combo';
+    const matchesFiltro = categoriaSelecionada === 'Todos' ? true : m.categoria === categoriaSelecionada;
+    return naoECombo && matchesFiltro;
+  });
+
+  const handleUpdateQuantity = (marmita: Marmita, delta: number) => {
     setEscolhas((prev) => {
       const mId = String(marmita.id);
       const existente = prev.find(item => String(item.id) === mId);
-      
+
       if (existente) {
         const novaQtd = Math.max(0, existente.quantidade + delta);
-        if (totalSelecionado + delta > metaUnidades && delta > 0) return prev;
+        if (totalSelecionado + delta > metaUnidades && delta > 0) return prev; // Trava no limite do combo
         
         if (novaQtd === 0) return prev.filter(item => String(item.id) !== mId);
         return prev.map(item => String(item.id) === mId ? { ...item, quantidade: novaQtd } : item);
       }
 
       if (delta > 0 && totalSelecionado < metaUnidades) {
-        return [...prev, { id: mId, nome: marmita.nome, quantidade: 1 }];
+        return [...prev, { id: marmita.id, nome: marmita.nome, quantidade: 1 }];
       }
       return prev;
     });
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4 backdrop-blur-sm">
-      <div className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl">
         
-        <div className="p-6 border-b border-gray-100">
-          <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold text-[#59853a]">Montar seu {combo.nome}</h2>
-            <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-2xl">✕</button>
+        {/* Cabeçalho */}
+        <div className="p-6 border-b">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-black text-gray-800 tracking-tight">{combo.nome}</h2>
+            <button onClick={onClose} className="text-gray-400 hover:text-gray-600 font-bold uppercase text-xs tracking-widest">Fechar</button>
           </div>
-          <p className="text-sm text-gray-500 mt-1">
-            Selecione as marmitas até completar <strong>{metaUnidades} unidades</strong>.
-          </p>
           
-          <div className="mt-4 bg-gray-100 h-3 rounded-full overflow-hidden">
-            <div 
-              className="bg-[#7cb151] h-full transition-all duration-300"
-              style={{ width: `${(totalSelecionado / metaUnidades) * 100}%` }}
-            />
+          <div className="bg-[#f9fbf7] p-3 rounded-xl border border-[#d1e7c5] flex justify-between items-center">
+            <span className="text-sm font-bold text-[#59853a]">Progresso da seleção:</span>
+            <span className={`text-lg font-black ${totalSelecionado === metaUnidades ? 'text-green-600' : 'text-amber-500'}`}>
+              {totalSelecionado} / {metaUnidades}
+            </span>
           </div>
-          <p className="text-right text-xs font-bold mt-1 text-[#59853a]">
-            {totalSelecionado} / {metaUnidades} selecionadas
-          </p>
         </div>
 
-        <div className="overflow-y-auto p-6 space-y-3 flex-1">
-          {marmitasDisponiveis
-            .filter(m => m.categoria !== 'Combo')
-            .map(m => {
-              // COMPARAÇÃO SEGURA: Transformamos ambos em String para evitar erro
-              const escolhaAtual = escolhas.find(e => String(e.id) === String(m.id));
-              const qtd = escolhaAtual ? escolhaAtual.quantidade : 0;
+        {/* Filtro de Categorias */}
+        <div className="px-6 py-4 bg-gray-50 border-b">
+          <CategoryFilter 
+            categories={categoriasFiltro}
+            selectedCategory={categoriaSelecionada}
+            onSelect={setCategoriaSelecionada}
+          />
+        </div>
+
+        {/* Lista de Itens Filtrados */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+          {marmitasParaExibir.length > 0 ? (
+            marmitasParaExibir.map((marmita) => {
+              const itemNaEscolha = escolhas.find(i => String(i.id) === String(marmita.id));
+              const qtdNoCombo = itemNaEscolha?.quantidade || 0;
               
               return (
-                <div key={String(m.id)} className="flex items-center justify-between p-3 rounded-xl border border-gray-100 bg-gray-50">
-                  <span className="font-medium text-gray-700 text-sm">{m.nome}</span>
-                  <div className="flex items-center gap-3">
+                <div key={marmita.id} className="flex items-center justify-between p-3 rounded-2xl border border-gray-100 hover:border-[#7cb151]/30 transition-all bg-white">
+                  <div className="flex items-center gap-4">
+                    <div className="relative">
+                      <img src={marmita.imagem} className="w-16 h-16 rounded-xl object-cover" alt={marmita.nome} />
+                      {qtdNoCombo > 0 && (
+                        <div className="absolute -top-2 -right-2 bg-[#7cb151] text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold border-2 border-white">
+                          {qtdNoCombo}
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-gray-800 text-sm">{marmita.nome}</h4>
+                      <span className="text-[9px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-bold uppercase tracking-tighter">
+                        {marmita.categoria}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  {/* Controles de Quantidade */}
+                  <div className="flex items-center gap-3 bg-gray-50 p-1 rounded-lg border border-gray-100">
                     <button 
-                      onClick={() => handleUpdateQuantidade(m, -1)}
-                      className="w-8 h-8 rounded-lg bg-white border border-gray-200 flex items-center justify-center hover:bg-gray-100"
+                      onClick={() => handleUpdateQuantity(marmita, -1)}
+                      className="w-8 h-8 flex items-center justify-center bg-white rounded-md shadow-sm font-bold text-gray-400 hover:text-red-500 transition-colors"
                     >-</button>
-                    <span className="w-4 text-center font-bold text-sm">{qtd}</span>
+                    <span className="font-bold text-gray-800 w-4 text-center text-sm">{qtdNoCombo}</span>
                     <button 
-                      onClick={() => handleUpdateQuantidade(m, 1)}
+                      onClick={() => handleUpdateQuantity(marmita, 1)}
                       disabled={totalSelecionado >= metaUnidades}
-                      className="w-8 h-8 rounded-lg bg-[#7cb151] text-white flex items-center justify-center hover:bg-[#59853a] disabled:opacity-30"
+                      className={`w-8 h-8 flex items-center justify-center rounded-md shadow-sm font-bold transition-all ${
+                        totalSelecionado >= metaUnidades 
+                        ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+                        : 'bg-[#7cb151] text-white hover:bg-[#59853a]'
+                      }`}
                     >+</button>
                   </div>
                 </div>
               );
-            })}
+            })
+          ) : (
+            <div className="text-center py-10 text-gray-400 text-sm italic">
+              Nenhuma marmita encontrada nesta categoria.
+            </div>
+          )}
         </div>
 
-        <div className="p-6 border-t border-gray-100 flex justify-end gap-3 bg-gray-50">
-          <button onClick={onClose} className="px-6 py-2 text-gray-500 font-bold hover:text-gray-700">Cancelar</button>
-          <button 
+        {/* Rodapé com Botão de Ação */}
+        <div className="p-6 border-t bg-gray-50 rounded-b-3xl">
+          <button
             disabled={totalSelecionado !== metaUnidades}
             onClick={() => onConfirm(escolhas)}
-            className="px-8 py-2 bg-[#7cb151] text-white rounded-xl font-bold disabled:bg-gray-300 transition-all shadow-lg shadow-green-100"
+            className={`w-full py-4 rounded-2xl font-black text-lg transition-all shadow-lg ${
+              totalSelecionado === metaUnidades 
+              ? 'bg-[#7cb151] text-white shadow-green-100 hover:scale-[1.02]' 
+              : 'bg-gray-200 text-gray-400 cursor-not-allowed uppercase text-sm tracking-widest'
+            }`}
           >
-            Confirmar Combo
+            {totalSelecionado === metaUnidades 
+              ? 'Finalizar Seleção' 
+              : `Faltam selecionar ${metaUnidades - totalSelecionado} marmitas`}
           </button>
         </div>
       </div>
