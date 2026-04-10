@@ -6,6 +6,7 @@ import { marmitas } from './data/marmitas';
 import { useCart } from './contexts/CartContext';
 import { ComboModal } from './components/ComboModal';
 import { CategoryFilter } from './components/CategoryFilter';
+import { Footer } from './components/Footer'; 
 import { type Marmita, type EscolhaCombo } from './types';
 import logo from './assets/Logo.png';
 
@@ -70,30 +71,30 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 overflow-x-hidden">
-      <header className="bg-white shadow-sm pt-6 pb-2 mb-8 sticky top-0 z-50 border-b border-gray-100">
+    <div className="min-h-screen flex flex-col bg-gray-50 overflow-x-hidden w-full">
+      <header className="bg-white shadow-sm pt-6 pb-2 mb-8 sticky top-0 z-50 border-b border-gray-100 w-full">
         <div className="max-w-7xl mx-auto px-4 relative flex items-center justify-center">
           <div className="flex justify-center transition-all duration-300">
             <img 
               src={logo} 
               alt="Nutricomp" 
-              className="h-24 lg:h-36 w-auto object-contain" 
+              className="h-20 lg:h-36 w-auto object-contain" 
             />
           </div>
           
           <div className="absolute right-4 top-1/2 -translate-y-1/2">
             <button 
               onClick={scrollToCart}
-              className="bg-[#e9f5e1] text-[#59853a] px-4 py-2 rounded-full font-bold shadow-sm border border-[#d1e7c5] flex items-center gap-2 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+              className="bg-[#e9f5e1] text-[#59853a] px-3 py-2 lg:px-4 lg:py-2 rounded-full font-bold shadow-sm border border-[#d1e7c5] flex items-center gap-2 hover:scale-105 active:scale-95 transition-all cursor-pointer"
             >
-              <span className="text-xl">🛒</span>
-              <span className="text-sm lg:text-base">Itens: {totalItems}</span>
+              <span className="text-lg lg:text-xl">🛒</span>
+              <span className="text-xs lg:text-base">Itens: {totalItems}</span>
             </button>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 pb-12">
+      <main className="w-full max-w-7xl mx-auto px-4 pb-12 flex-grow">
         <div className="w-full mb-8 bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
           <p className="text-[10px] font-black text-gray-400 uppercase mb-3 tracking-widest text-center md:text-left">
             Explorar Cardápio Nutricomp
@@ -105,9 +106,8 @@ function App() {
           />
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8 items-start">
+        <div className="flex flex-col lg:flex-row gap-8 items-start w-full">
           <div className="flex-1 w-full min-w-0">
-            {/* CORREÇÃO AQUI: Grid com items-stretch e sem justify-center para não quebrar a altura */}
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 items-stretch">
               {marmitasFiltradas.map((item) => (
                 <MarmitaCard 
@@ -121,7 +121,7 @@ function App() {
           
           <aside 
             id="carrinho-secao"
-            className="w-full lg:w-96 flex flex-col gap-6 lg:sticky lg:top-40 lg:max-h-[calc(100vh-180px)] overflow-y-auto lg:overflow-x-visible overflow-x-hidden pr-2 custom-scrollbar"
+            className="w-full lg:w-96 max-w-full flex flex-col gap-6 lg:sticky lg:top-40 lg:max-h-[calc(100vh-180px)] overflow-y-auto pr-0 lg:pr-2 custom-scrollbar overflow-x-hidden"
           >
             <Cart onFinalizar={handleFinalizar} checkoutAberto={mostrarCheckout} />
             {mostrarCheckout && (
@@ -132,6 +132,8 @@ function App() {
           </aside>
         </div>
       </main>
+
+      <Footer />
 
       {comboSendoMontado && (
         <ComboModal 
