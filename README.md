@@ -47,6 +47,16 @@ O pedido é estruturado de forma lógica para agilizar o atendimento e o cálcul
 - **Responsividade Avançada**: Interface Mobile-First com transição de `aside` lateral para scroll vertical, garantindo zero quebra de layout em telas pequenas.
 - **Sanitização via Regex**: Filtros de entrada em tempo real para CPF (11 dígitos), CEP e Telefone, garantindo integridade dos dados enviados.
 
+## ⚙️ Configuração de Ambiente
+
+Para que o envio de pedidos via WhatsApp funcione corretamente, é necessário configurar as variáveis de ambiente. 
+
+1. Na raiz do projeto, crie um arquivo chamado `.env`.
+2. Adicione a seguinte variável com o número de destino (apenas números, com DDD):
+
+```env
+VITE_WHATSAPP_NUMBER=55DDD123456789
+
 ---
 Desenvolvido por **Danilo Texeira** | Foco em UX, Performance e Clean Code.
 
