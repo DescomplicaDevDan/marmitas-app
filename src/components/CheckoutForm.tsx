@@ -37,9 +37,9 @@ export function CheckoutForm() {
     let resumoBrindes = "";
     cart.forEach(item => {
       if (item.categoria === 'Combo') {
-        if (item.nome.includes("10")) resumoBrindes += "1x Marmita de 350g (BRINDE).\n";
-        if (item.nome.includes("20")) resumoBrindes += "2x Marmitas de 350g (BRINDE).\n";
-        if (item.nome.includes("30")) resumoBrindes += "3x Marmitas de 350g (BRINDE).\n";
+        if (item.nome.includes("10")) resumoBrindes += "1x Marmita de 300g ou 350g (BRINDE).\n";
+        if (item.nome.includes("20")) resumoBrindes += "2x Marmitas de 300 ou 350g (BRINDE).\n";
+        if (item.nome.includes("30")) resumoBrindes += "3x Marmitas de 300g ou 350g (BRINDE).\n";
       }
     });
 
@@ -52,7 +52,7 @@ export function CheckoutForm() {
       `--- \n` +
       `*ITENS DO PEDIDO:*\n${listaItens}\n\n` +
       `--- \n` +
-      `${resumoBrindes ? `*ATENÇÃO COZINHA - BRINDES:* \n${resumoBrindes}\n--- \n` : ''}` +
+      `${resumoBrindes ? `*ATENÇÃO COZINHA - BRINDE:* \n${resumoBrindes}\n--- \n` : ''}` +
       `*TOTAL:* R$ ${totalPrice.toFixed(2)}\n` +
       `*FORMA DE PAGAMENTO:* ${formData.formaPagamento.toUpperCase()}\n\n` +
       `*ENDEREÇO DE ENTREGA:*\n` +
