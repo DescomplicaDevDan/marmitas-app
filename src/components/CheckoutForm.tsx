@@ -7,6 +7,7 @@ export function CheckoutForm() {
 
   const [formData, setFormData] = useState<CheckoutFormData>({
     nome: '',
+    CPF: '', 
     telefone: '',
     endereco: '',
     nº: '',
@@ -27,25 +28,26 @@ export function CheckoutForm() {
     const listaItens = cart.map((item: CartItem) => {
       let texto = `- ${item.quantidade}x *${item.nome}*`;
       if (item.categoria === 'Combo' && item.escolhas) {
-        const escolhas = item.escolhas.map((esc: any) => `   └ ${esc.quantidade}x ${esc.nome}`).join('\n');
+        const escolhas = item.escolhas.map((esc: any) => `    └ ${esc.quantidade}x ${esc.nome}`).join('\n');
         texto += `\n${escolhas}`;
       }
       return texto;
     }).join('\n\n');
 
     let resumoBrindes = "";
-  cart.forEach(item => {
-    if (item.categoria === 'Combo') {
-      if (item.nome.includes("10")) resumoBrindes += "1x Marmita de 350g (BRINDE)\n";
-      if (item.nome.includes("20")) resumoBrindes += "2x Marmitas de 350g (BRINDE)\n";
-      if (item.nome.includes("30")) resumoBrindes += "3x Marmitas de 350g (BRINDE)\n";
-    }
-  });
+    cart.forEach(item => {
+      if (item.categoria === 'Combo') {
+        if (item.nome.includes("10")) resumoBrindes += "1x Marmita de 350g (BRINDE)\n";
+        if (item.nome.includes("20")) resumoBrindes += "2x Marmitas de 350g (BRINDE)\n";
+        if (item.nome.includes("30")) resumoBrindes += "3x Marmitas de 350g (BRINDE)\n";
+      }
+    });
 
     const textoPedido = 
       `*NOVO PEDIDO - NUTRICOMP*\n\n` +
-      `Ola! Gostaria de finalizar meu pedido:\n\n` +
+      `Olá! Gostaria de finalizar meu pedido:\n\n` +
       `*CLIENTE:* ${formData.nome}\n` +
+      `*CPF:* ${formData.CPF}\n` + // CPF ADICIONADO NA MENSAGEM
       `*WhatsApp:* ${formData.telefone}\n\n` +
       `--- \n` +
       `*ITENS DO PEDIDO:*\n${listaItens}\n\n` +
@@ -53,11 +55,11 @@ export function CheckoutForm() {
       `${resumoBrindes ? `*ATENÇÃO COZINHA - BRINDES:* \n${resumoBrindes}\n--- \n` : ''}` +
       `*TOTAL:* R$ ${totalPrice.toFixed(2)}\n` +
       `*FORMA DE PAGAMENTO:* ${formData.formaPagamento.toUpperCase()}\n\n` +
-      `*ENDERECO DE ENTREGA:*\n` +
+      `*ENDEREÇO DE ENTREGA:*\n` +
       `${formData.endereco}, n ${formData.nº}\n` +
       `${formData.bairro} - ${formData.cidade}\n` +
       `*CEP:* ${formData.cep}\n\n` +
-      `${formData.observacoes ? `*OBSERVACAO:* ${formData.observacoes}\n\n` : ''}` +
+      `${formData.observacoes ? `*OBSERVAÇÃO:* ${formData.observacoes}\n\n` : ''}` +
       `*Aguardando o valor do frete para confirmar o pedido.*`;
 
     const mensagem = encodeURIComponent(textoPedido);
@@ -65,7 +67,7 @@ export function CheckoutForm() {
     
     clearCart();
     setFormData({
-      nome: '', telefone: '', endereco: '', nº: '', cep: '',
+      nome: '', CPF: '', telefone: '', endereco: '', nº: '', cep: '',
       bairro: '', cidade: 'São Paulo', formaPagamento: 'pix', observacoes: ''
     });
   };
@@ -83,7 +85,16 @@ export function CheckoutForm() {
           onChange={e => setFormData({...formData, nome: e.target.value})}
         />
 
-        {/* 2. APLICAÇÃO NO TELEFONE (Máx 11 dígitos) */}
+        {/* --- CAMPO CPF ADICIONADO --- */}
+        <input 
+          required
+          type="text"
+          placeholder="CPF (apenas números)"
+          value={formData.CPF}
+          className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-[#7cb151]"
+          onChange={e => setFormData({...formData, CPF: apenasNumeros(e.target.value).slice(0, 11)})}
+        />
+
         <input 
           required
           type="tel"
@@ -103,7 +114,6 @@ export function CheckoutForm() {
               onChange={e => setFormData({...formData, endereco: e.target.value})}
             />
           </div>
-          {/* 3. APLICAÇÃO NO NÚMERO */}
           <div className="col-span-1">
             <input 
               required
@@ -115,7 +125,6 @@ export function CheckoutForm() {
           </div>
         </div>
 
-        {/* 4. APLICAÇÃO NO CEP (Máx 8 dígitos) */}
         <input 
           required 
           placeholder="CEP (apenas números)" 

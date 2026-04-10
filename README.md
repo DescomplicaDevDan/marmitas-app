@@ -5,7 +5,12 @@ Sistema de pedido de marmitas fitness desenvolvido com **React**, **TypeScript**
 ## 🚀 Novas Funcionalidades
 
 - **Integração Direta com WhatsApp**: Envio automático do pedido formatado, detalhando itens, combos e escolhas do cliente.
-Persistência de Dados (LocalStorage): Implementação de sincronização com o armazenamento local, garantindo que o carrinho do usuário seja preservado mesmo após atualizar ou fechar a página.
+
+- **Validação de Entrada (UX)**: 
+- Campos de Telefone, CEP, Número e **CPF** aceitam apenas dígitos numéricos.
+- Limitação de caracteres para evitar erros de digitação (**CPF: 11 dígitos**).
+
+- **Checkout Inteligente**: Resumo de valores, campo para observações e **coleta de dados fiscais (CPF)** para processamento de pedidos.
 
 **Persistência de Dados (LocalStorage)**: 
 - Implementação de sincronização com o armazenamento local, garantindo que o carrinho do usuário seja preservado mesmo após atualizar ou fechar a página.

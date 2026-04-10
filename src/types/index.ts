@@ -4,7 +4,7 @@ export interface Marmita {
   descricao?: string;
   preco: number;
   imagem: string;
-  limiteEscolhas?: String;
+  limiteEscolhas?: string; // Corrigido para 'string' (s minúsculo) por padrão TS
   brinde?: string;
   categoria: 'Carne' | 'Frango' | 'Peixe' | 'Suíno' | 'Vegetariana' | 'Combo'; 
   escolhas?: EscolhaCombo[];
@@ -16,6 +16,7 @@ export interface CartItem extends Marmita {
 
 export interface CheckoutFormData {
   nome: string;
+  CPF: string; // ALTERADO: De number para string para aceitar 11 dígitos e zeros à esquerda
   telefone: string;
   endereco: string;
   nº: string;
