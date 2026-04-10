@@ -23,7 +23,7 @@ export function CheckoutForm() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const telefoneDono = "5522992090717"; 
+    const telefoneDono =import.meta.env.VITE_WHATSAPP_NUMBER; 
 
     const listaItens = cart.map((item: CartItem) => {
       let texto = `- ${item.quantidade}x *${item.nome}*`;
@@ -37,9 +37,9 @@ export function CheckoutForm() {
     let resumoBrindes = "";
     cart.forEach(item => {
       if (item.categoria === 'Combo') {
-        if (item.nome.includes("10")) resumoBrindes += "1x Marmita de 350g (BRINDE)\n";
-        if (item.nome.includes("20")) resumoBrindes += "2x Marmitas de 350g (BRINDE)\n";
-        if (item.nome.includes("30")) resumoBrindes += "3x Marmitas de 350g (BRINDE)\n";
+        if (item.nome.includes("10")) resumoBrindes += "1x Marmita de 350g (BRINDE).\n";
+        if (item.nome.includes("20")) resumoBrindes += "2x Marmitas de 350g (BRINDE).\n";
+        if (item.nome.includes("30")) resumoBrindes += "3x Marmitas de 350g (BRINDE).\n";
       }
     });
 
@@ -60,7 +60,7 @@ export function CheckoutForm() {
       `${formData.bairro} - ${formData.cidade}\n` +
       `*CEP:* ${formData.cep}\n\n` +
       `${formData.observacoes ? `*OBSERVAÇÃO:* ${formData.observacoes}\n\n` : ''}` +
-      `*Aguardando o valor do frete para confirmar o pedido.*`;
+      `*AGUARDANDO O VALOR DO FRETE PARA CONFIRMAR O PEDIDO.*`;
 
     const mensagem = encodeURIComponent(textoPedido);
     window.open(`https://wa.me/${telefoneDono}?text=${mensagem}`, '_blank');
