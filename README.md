@@ -1,4 +1,8 @@
-# 🥗 MarmitaCard - Nutricomp
+# 🍱 Nutricomp - Sistema de Pedidos
+
+> Status do Projeto: 🚀 Online em [nutricomp.com.br](https://nutricomp.com.br)
+
+Este projeto é um sistema de cardápio digital e gestão de pedidos para marmitaria fitness, focado em agilidade e experiência do usuário.
 
 Sistema de pedido de marmitas fitness desenvolvido com **React**, **TypeScript** e **Tailwind CSS**.
 
@@ -29,11 +33,16 @@ Sistema de pedido de marmitas fitness desenvolvido com **React**, **TypeScript**
 - **Checkout Inteligente**: Resumo de valores e campo para observações adicionais.
 
 ## 🛠️ Tecnologias
-- React + Vite
-- TypeScript
-- Tailwind CSS
-- Context API (Cart Management)
-- Lucide React
+- **Frontend:** React + Vite + Tailwind CSS + Lucide React
+- **TypeScript**
+- **Context API** (Cart Management)
+- **Hospedagem:** HostGator (cPanel)
+- **SSL:** Ativo e Monitorado via Google Search Console
+
+### 🛠️ Notas de Implantação (Deploy)
+- **SSL/TLS:** Configurado via HostGator (AutoSSL).
+- **Segurança:** O domínio passou por uma reestruturação completa em Abril de 2026. 
+- **Status de Verificação:** Em processo de revalidação pelo Google Safe Browsing após a migração para a arquitetura React.
 
 ## 📋 Como o Pedido Chega no WhatsApp
 O pedido é estruturado de forma lógica para agilizar o atendimento e o cálculo de logística:
