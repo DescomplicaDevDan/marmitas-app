@@ -38,20 +38,23 @@ export function CheckoutForm() {
       } 
       
       // LÓGICA PARA INDIVIDUAL: Clean e em uma linha única
-      // Formato: 1x [1.1] ALMÔNDEGA DE FRANGO
       return `${item.quantidade}x [${item.codigoPrato || 'S/C'}] ${item.nome.toUpperCase()}`;
 
     }).join('\n---\n');
 
-    // Resumo de brindes baseado no nome do combo
-    let resumoBrindes = "";
+    // LÓGICA DE BRINDES SOMADA: Multiplica o brinde pela quantidade de combos
+    let totalBrindes = 0;
     cart.forEach(item => {
       if (item.categoria === 'Combo') {
-        if (item.nome.includes("10")) resumoBrindes += "- 1x Marmita de 300g ou 350g (BRINDE)\n";
-        if (item.nome.includes("20")) resumoBrindes += "- 2x Marmitas de 300 ou 350g (BRINDE)\n";
-        if (item.nome.includes("30")) resumoBrindes += "- 3x Marmitas de 300g ou 350g (BRINDE)\n";
+        if (item.nome.includes("10")) totalBrindes += (1 * item.quantidade);
+        if (item.nome.includes("20")) totalBrindes += (2 * item.quantidade);
+        if (item.nome.includes("30")) totalBrindes += (3 * item.quantidade);
       }
     });
+
+    const resumoBrindes = totalBrindes > 0 
+      ? `- ${totalBrindes}x Marmitas de 300g ou 350g (BRINDE TOTAL)\n` 
+      : "";
 
     // MONTAGEM DA MENSAGEM FINAL (Sem Emojis)
     const textoPedido = 
