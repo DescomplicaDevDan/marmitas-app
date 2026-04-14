@@ -66,6 +66,5 @@ Para que o envio de pedidos via WhatsApp funcione corretamente, é necessário c
 ```env
 VITE_WHATSAPP_NUMBER=55DDD123456789
 
----
-Desenvolvido por **Danilo Texeira** | Foco em UX, Performance e Clean Code.
+Desenvolvido por Danilo Texeira | Foco em UX, Performance e Clean Code.
 
