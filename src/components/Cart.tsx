@@ -18,7 +18,6 @@ export function Cart({ onFinalizar, checkoutAberto }: CartProps) {
       
       <div className="space-y-4">
       {cart.map((item) => {
-        // Cálculo dinâmico do brinde baseado na quantidade do item
         const brindePorUnidade = item.nome.includes('10') ? 1 : 
                                  item.nome.includes('20') ? 2 : 
                                  item.nome.includes('30') ? 3 : 0;

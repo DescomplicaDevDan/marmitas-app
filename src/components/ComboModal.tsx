@@ -40,7 +40,6 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
       }
 
       if (delta > 0 && totalSelecionado < metaUnidades) {
-        // CORREÇÃO: Adicionado codigoPrato para não aparecer S/C no WhatsApp
         return [...prev, { 
           id: marmita.id, 
           codigoPrato: marmita.codigoPrato ?? '', 

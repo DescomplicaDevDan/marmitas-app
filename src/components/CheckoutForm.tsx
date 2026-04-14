@@ -25,9 +25,7 @@ export function CheckoutForm() {
     
     const telefoneDono = import.meta.env.VITE_WHATSAPP_NUMBER; 
 
-    // FORMATAÇÃO DOS ITENS (Foco na Cozinha e Legibilidade)
     const listaItens = cart.map((item: CartItem) => {
-      // LÓGICA PARA COMBO: Mantém a lista de composição
       if (item.categoria === 'Combo' && item.escolhas) {
         let textoCombo = `[COMBO] ${item.nome.toUpperCase()} (QTD: ${item.quantidade})\n`;
         textoCombo += `COMPOSICAO:\n`;
@@ -37,12 +35,10 @@ export function CheckoutForm() {
         return textoCombo + escolhas + `\n`;
       } 
       
-      // LÓGICA PARA INDIVIDUAL: Clean e em uma linha única
       return `${item.quantidade}x [${item.codigoPrato || 'S/C'}] ${item.nome.toUpperCase()}`;
 
     }).join('\n---\n');
 
-    // LÓGICA DE BRINDES SOMADA: Multiplica o brinde pela quantidade de combos
     let totalBrindes = 0;
     cart.forEach(item => {
       if (item.categoria === 'Combo') {
@@ -56,7 +52,6 @@ export function CheckoutForm() {
       ? `- ${totalBrindes}x Marmitas de 300g ou 350g (BRINDE TOTAL)\n` 
       : "";
 
-    // MONTAGEM DA MENSAGEM FINAL (Sem Emojis)
     const textoPedido = 
       `NOVO PEDIDO - NUTRICOMP\n\n` +
       `CLIENTE: ${formData.nome.toUpperCase()}\n` +
