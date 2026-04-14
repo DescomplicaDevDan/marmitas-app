@@ -16,7 +16,7 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
   const metaUnidades = parseInt(combo.nome.replace(/\D/g, '')) || 10;
   const totalSelecionado = escolhas.reduce((sum, item) => sum + item.quantidade, 0);
 
-    const categoriasFiltro = Array.from(
+  const categoriasFiltro = Array.from(
     new Set(marmitasDisponiveis.filter(m => m.categoria !== 'Combo').map(m => m.categoria))
   );
 
@@ -40,7 +40,13 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
       }
 
       if (delta > 0 && totalSelecionado < metaUnidades) {
-        return [...prev, { id: marmita.id, nome: marmita.nome, quantidade: 1 }];
+        // CORREÇÃO: Adicionado codigoPrato para não aparecer S/C no WhatsApp
+        return [...prev, { 
+          id: marmita.id, 
+          codigoPrato: marmita.codigoPrato ?? '', 
+          nome: marmita.nome, 
+          quantidade: 1 
+        }];
       }
       return prev;
     });
@@ -53,7 +59,7 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
         {/* Cabeçalho */}
         <div className="p-6 border-b">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-black text-gray-800 tracking-tight">{combo.nome}</h2>
+            <h2 className="text-2xl font-black text-gray-800 tracking-tight uppercase">{combo.nome}</h2>
             <button onClick={onClose} className="text-gray-400 hover:text-gray-600 font-bold uppercase text-xs tracking-widest">Fechar</button>
           </div>
           
@@ -93,7 +99,9 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
                       )}
                     </div>
                     <div>
-                      <h4 className="font-bold text-gray-800 text-sm">{marmita.nome}</h4>
+                      {/* Exibe o código também no modal para conferência */}
+                      <span className="text-[10px] font-bold text-gray-400 block uppercase">Cod: {marmita.codigoPrato}</span>
+                      <h4 className="font-bold text-gray-800 text-sm">{marmita.nome.toUpperCase()}</h4>
                       <span className="text-[9px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-bold uppercase tracking-tighter">
                         {marmita.categoria}
                       </span>
@@ -103,11 +111,13 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
                   {/* Controles de Quantidade */}
                   <div className="flex items-center gap-3 bg-gray-50 p-1 rounded-lg border border-gray-100">
                     <button 
+                      type="button"
                       onClick={() => handleUpdateQuantity(marmita, -1)}
                       className="w-8 h-8 flex items-center justify-center bg-white rounded-md shadow-sm font-bold text-gray-400 hover:text-red-500 transition-colors"
                     >-</button>
                     <span className="font-bold text-gray-800 w-4 text-center text-sm">{qtdNoCombo}</span>
                     <button 
+                      type="button"
                       onClick={() => handleUpdateQuantity(marmita, 1)}
                       disabled={totalSelecionado >= metaUnidades}
                       className={`w-8 h-8 flex items-center justify-center rounded-md shadow-sm font-bold transition-all ${
@@ -130,6 +140,7 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
         {/* Rodapé com Botão de Ação */}
         <div className="p-6 border-t bg-gray-50 rounded-b-3xl">
           <button
+            type="button"
             disabled={totalSelecionado !== metaUnidades}
             onClick={() => onConfirm(escolhas)}
             className={`w-full py-4 rounded-2xl font-black text-lg transition-all shadow-lg ${

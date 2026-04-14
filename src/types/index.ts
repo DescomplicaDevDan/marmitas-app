@@ -1,6 +1,8 @@
 export interface Marmita {
   id: string;
+  codigoPrato?: string;
   nome: string;
+  ingredientes?: string;
   descricao?: string;
   preco: number;
   imagem: string;
@@ -29,6 +31,7 @@ export interface CheckoutFormData {
 
 export interface EscolhaCombo {
   id: string;
+  codigoPrato?: string;
   nome: string;
   quantidade: number;
 }
