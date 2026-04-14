@@ -6,7 +6,7 @@ Sistema escalável de cardápio digital e automação de logística para marmita
 
 ---
 
-## ⚡ Destaques de Engenharia (O que importa)
+## ⚡ Destaques de Engenharia
 
 * **Logística Automatizada:** Integração via WhatsApp com payload formatado para produção (Itens, Combos e Brindes Acumulativos).
 * **Sanitização com Regex:** Filtros em tempo real para CPF (11 dígitos), CEP e Telefone, garantindo integridade total dos dados.
