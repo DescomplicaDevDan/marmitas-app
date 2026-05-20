@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { type Marmita, type EscolhaCombo } from '../types';
 import { CategoryFilter } from './CategoryFilter';
+import { ENABLE_PROGRESSIVE_BONUS } from './Cart';
 
 interface Props {
   combo: Marmita;
@@ -13,7 +14,15 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
   const [categoriaSelecionada, setCategoriaSelecionada] = useState('Todos');
   const [escolhas, setEscolhas] = useState<EscolhaCombo[]>([]);
 
-  const metaUnidades = parseInt(combo.nome.replace(/\D/g, '')) || 10;
+  const baseUnidades = parseInt(combo.nome.replace(/\D/g, '')) || 10;
+
+  const unidadesBrinde = !ENABLE_PROGRESSIVE_BONUS ? 0 :
+                        combo.nome.includes('10') ? 1 : 
+                        combo.nome.includes('20') ? 2 : 
+                        combo.nome.includes('30') ? 3 : 0;
+                  
+  const metaUnidades = baseUnidades + unidadesBrinde;
+
   const totalSelecionado = escolhas.reduce((sum, item) => sum + item.quantidade, 0);
 
   const categoriasFiltro = Array.from(

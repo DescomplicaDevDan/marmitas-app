@@ -1,4 +1,5 @@
 import { useCart } from '../contexts/CartContext';
+export const ENABLE_PROGRESSIVE_BONUS = false; // Desativado a pedido do cliente em maio/2026
 
 interface CartProps {
   onFinalizar: () => void;
@@ -18,7 +19,8 @@ export function Cart({ onFinalizar, checkoutAberto }: CartProps) {
       
       <div className="space-y-4">
       {cart.map((item) => {
-        const brindePorUnidade = item.nome.includes('10') ? 1 : 
+        const brindePorUnidade = !ENABLE_PROGRESSIVE_BONUS ? 0 :
+                                 item.nome.includes('10') ? 1 : 
                                  item.nome.includes('20') ? 2 : 
                                  item.nome.includes('30') ? 3 : 0;
         
@@ -65,7 +67,7 @@ export function Cart({ onFinalizar, checkoutAberto }: CartProps) {
             )}
 
             {/* IMPLEMENTAÇÃO: BRINDE ATUALIZADO PELA QUANTIDADE */}
-            {item.categoria === 'Combo' && totalBrindesItem > 0 && (
+            {ENABLE_PROGRESSIVE_BONUS && item.categoria === 'Combo' && totalBrindesItem > 0 && (
               <div className="mt-2 p-2 rounded-lg bg-gradient-to-r from-amber-50 to-yellow-100 border border-amber-200 shadow-sm animate-pulse">
                 <div className="flex items-center gap-2">
                   <span className="text-base">🏆</span>

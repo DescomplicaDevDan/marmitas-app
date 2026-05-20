@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useCart } from '../contexts/CartContext';
 import type { CheckoutFormData, CartItem } from '../types';
+import { ENABLE_PROGRESSIVE_BONUS } from './Cart';
 
 export function CheckoutForm() {
   const { cart, totalItems, totalPrice, clearCart } = useCart();
@@ -40,13 +41,15 @@ export function CheckoutForm() {
     }).join('\n---\n');
 
     let totalBrindes = 0;
+    if (ENABLE_PROGRESSIVE_BONUS) {
     cart.forEach(item => {
       if (item.categoria === 'Combo') {
         if (item.nome.includes("10")) totalBrindes += (1 * item.quantidade);
         if (item.nome.includes("20")) totalBrindes += (2 * item.quantidade);
         if (item.nome.includes("30")) totalBrindes += (3 * item.quantidade);
       }
-    });
+    })
+    };
 
     const resumoBrindes = totalBrindes > 0 
       ? `- ${totalBrindes}x Marmitas de 300g ou 350g (BRINDE TOTAL)\n` 

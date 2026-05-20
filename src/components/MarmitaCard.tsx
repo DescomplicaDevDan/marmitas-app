@@ -1,5 +1,6 @@
 import { type Marmita } from '../types';
 import { useCart } from '../contexts/CartContext';
+import { ENABLE_PROGRESSIVE_BONUS } from './Cart';
 
 interface MarmitaCardProps {
   marmita: Marmita;
@@ -26,7 +27,7 @@ export function MarmitaCard({ marmita, onMontarCombo }: MarmitaCardProps) {
     }`}>
       
       {/* Selo Amarelo "GANHE" */}
-      {isCombo && (
+      {ENABLE_PROGRESSIVE_BONUS && isCombo && (
         <div className="absolute top-2 right-2 z-20 animate-bounce">
           <div className="bg-[#facc15] text-[#854d0e] text-[10px] font-black px-2 py-1 rounded-lg shadow-md border border-[#eab308] flex flex-col items-center leading-none">
             <span>GANHE</span>
