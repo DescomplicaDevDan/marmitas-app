@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useCart } from '../contexts/CartContext';
 import type { CheckoutFormData, CartItem } from '../types';
+import { ENABLE_PROGRESSIVE_BONUS } from './Cart';
 
 export function CheckoutForm() {
   const { cart, totalItems, totalPrice, clearCart } = useCart();
@@ -25,52 +26,76 @@ export function CheckoutForm() {
     
     const telefoneDono = import.meta.env.VITE_WHATSAPP_NUMBER; 
 
-    const listaItens = cart.map((item: CartItem) => {
-      if (item.categoria === 'Combo' && item.escolhas) {
-        let textoCombo = `[COMBO] ${item.nome.toUpperCase()} (QTD: ${item.quantidade})\n`;
-        textoCombo += `COMPOSICAO:\n`;
-        const escolhas = item.escolhas.map((esc: any) => 
-          `  > ${esc.quantidade}x [${esc.codigoPrato || 'S/C'}] ${esc.nome.toUpperCase()}`
-        ).join('\n');
-        return textoCombo + escolhas + `\n`;
-      } 
-      
-      return `${item.quantidade}x [${item.codigoPrato || 'S/C'}] ${item.nome.toUpperCase()}`;
+    // Separação lógica para organizar a mensagem da cozinha
+    const combos = cart.filter(item => item.categoria === 'Combo');
+    const avulsas = cart.filter(item => item.categoria !== 'Combo');
 
-    }).join('\n---\n');
+    let textoItensCozinha = '';
 
+    // 1. Monta a seção de Combos se houver algum no carrinho
+    if (combos.length > 0) {
+      textoItensCozinha += `--- COMBOS MONTADOS ---\n\n`;
+      textoItensCozinha += combos.map((item: CartItem) => {
+        let textoCombo = `[COMBO] ${item.nome} (QTD: ${item.quantidade})\n`;
+        textoCombo += `Composição:\n`;
+        const escolhas = item.escolhas?.map((esc: any) => 
+          `  > ${esc.quantidade}x [${esc.codigoPrato || 'S/C'}] ${esc.nome}`
+        ).join('\n') || '';
+        return textoCombo + escolhas;
+      }).join('\n\n') + '\n\n----------------------------------------\n\n';
+    }
+
+    // 2. Monta a seção de Marmitas Avulsas de forma linear e limpa
+    if (avulsas.length > 0) {
+      textoItensCozinha += `--- MARMITAS AVULSAS ---\n\n`;
+      textoItensCozinha += avulsas.map((item: CartItem) => 
+        `  > ${item.quantidade}x [${item.codigoPrato || 'S/C'}] ${item.nome}`
+      ).join('\n') + '\n';
+    }
+
+    // Cálculo da bonificação progressiva
     let totalBrindes = 0;
-    cart.forEach(item => {
-      if (item.categoria === 'Combo') {
-        if (item.nome.includes("10")) totalBrindes += (1 * item.quantidade);
-        if (item.nome.includes("20")) totalBrindes += (2 * item.quantidade);
-        if (item.nome.includes("30")) totalBrindes += (3 * item.quantidade);
-      }
-    });
+    if (ENABLE_PROGRESSIVE_BONUS) {
+      cart.forEach(item => {
+        if (item.categoria === 'Combo') {
+          if (item.nome.includes("10")) totalBrindes += (1 * item.quantidade);
+          if (item.nome.includes("20")) totalBrindes += (2 * item.quantidade);
+          if (item.nome.includes("30")) totalBrindes += (3 * item.quantidade);
+        }
+      });
+    }
 
-    const resumoBrindes = totalBrindes > 0 
+    const resumenBrindes = totalBrindes > 0 
       ? `- ${totalBrindes}x Marmitas de 300g ou 350g (BRINDE TOTAL)\n` 
       : "";
 
+    // Formatação amigável do texto da forma de pagamento
+    const pagamentoFormatado = formData.formaPagamento === 'pix' 
+      ? 'PIX' 
+      : formData.formaPagamento.charAt(0).toUpperCase() + formData.formaPagamento.slice(1);
+
+    // Estrutura final do texto em blocos limpos (Sem emojis)
     const textoPedido = 
       `NOVO PEDIDO - NUTRICOMP\n\n` +
-      `CLIENTE: ${formData.nome.toUpperCase()}\n` +
+      `DADOS DO CLIENTE\n` +
+      `Cliente: ${formData.nome}\n` +
       `CPF: ${formData.CPF}\n` +
-      `CONTATO: ${formData.telefone}\n\n` +
-      `----------------------------\n` +
-      `ITENS DO PEDIDO (COZINHA):\n` +
-      `----------------------------\n` +
-      `${listaItens}\n` +
-      `----------------------------\n\n` +
-      `${resumoBrindes ? `ATENCAO COZINHA - BRINDE:\n${resumoBrindes}----------------------------\n\n` : ''}` +
-      `PAGAMENTO:\n` +
-      `TOTAL: R$ ${totalPrice.toFixed(2)}\n` +
-      `FORMA DE PAGAMENTO: ${formData.formaPagamento.toUpperCase()}\n\n` +
-      `ENDERECO DE ENTREGA:\n` +
-      `${formData.endereco.toUpperCase()}, N ${formData.nº}\n` +
-      `${formData.bairro.toUpperCase()} - ${formData.cidade.toUpperCase()}\n` +
+      `Contato: ${formData.telefone}\n\n` +
+      `========================================\n` +
+      `ITENS DO PEDIDO (COZINHA)\n` +
+      `========================================\n\n` +
+      `${textoItensCozinha}\n` +
+      `========================================\n\n` +
+      `${resumenBrindes ? `ATENCAO COZINHA - BRINDE:\n${resumenBrindes}----------------------------\n\n` : ''}` +
+      `PAGAMENTO\n` +
+      `Forma de Pagamento: ${pagamentoFormatado}\n` +
+      `Total: R$ ${totalPrice.toFixed(2)}\n\n` +
+      `ENTREGA\n` +
+      `Endereço: ${formData.endereco}, N ${formData.nº}\n` +
+      `Bairro: ${formData.bairro} - Cidade: ${formData.cidade}\n` +
       `CEP: ${formData.cep}\n\n` +
-      `${formData.observacoes ? `OBSERVACAO: ${formData.observacoes.toUpperCase()}\n\n` : ''}` +
+      `${formData.observacoes ? `OBSERVAÇÕES\n${formData.observacoes}\n\n` : ''}` +
+      `----------------------------------------\n` +
       `AGUARDANDO O VALOR DO FRETE PARA CONFIRMAR O PEDIDO.`;
 
     const mensagem = encodeURIComponent(textoPedido);
@@ -165,9 +190,9 @@ export function CheckoutForm() {
           className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-[#7cb151] font-bold text-gray-700 cursor-pointer"
           onChange={e => setFormData({...formData, formaPagamento: e.target.value as any})}
         >
-          <option value="pix">PAGAMENTO: PIX</option>
-          <option value="cartao de crédito">CARTÃO DE CRÉDITO</option>
-          <option value="Cartão de débito">CARTÃO DE DÉBITO</option>
+          <option value="pix">Pagamento: PIX</option>
+          <option value="cartao de crédito">Cartão de Crédito</option>
+          <option value="Cartão de débito">Cartão de Débito</option>
         </select>
 
         <textarea 
