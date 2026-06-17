@@ -1,6 +1,6 @@
 # 🍱 Nutricomp - Sistema de Gestão de Pedidos
 
-> **Acesse o Projeto:** 🚀 [nutricomp.com.br](https://nutricomp.com.br)
+> **Acesse o Projeto:** 🚀 [nutricomp.com.br](https://www.nutricomp.com.br)
 
 Sistema escalável de cardápio digital e automação de logística para marmitaria fitness. Focado em **UX de alta conversão**, **Clean Code** e separação de fluxos de produção.
 
@@ -13,8 +13,6 @@ Sistema escalável de cardápio digital e automação de logística para marmita
 * **Performance & UX:** Interface *Mobile-First*, persistência de estado do carrinho com *LocalStorage* (evitando perda de dados em reloads), cards compactos e harmonia de grid com `items-stretch`.
 * **Integridade Nutricional:** Tabelas nutricionais vinculadas pelo `id` canônico do produto, evitando associação incorreta entre pratos visualmente parecidos ou códigos legados.
 * **Arquitetura Profissional:** Tipagem estrita com TypeScript, componentização limpa e gestão de estado global centralizada via Context API (`CartContext`).
-
-> Para uma visão mais detalhada das decisões técnicas, consulte [Stack, Bibliotecas e Metodologias](./docs/STACK_E_METODOLOGIAS.md).
 
 ---
 
