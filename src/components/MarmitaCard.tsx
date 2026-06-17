@@ -13,20 +13,13 @@ interface MarmitaCardProps {
 export function MarmitaCard({ marmita, onMontarCombo }: MarmitaCardProps) {
   const { addToCart, cart, updateQuantity } = useCart();
   const [isPinned, setIsPinned] = useState(false);
-  const [isInfoHovered, setIsInfoHovered] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
   const itemNoCarrinho = cart.find((item) => item.id === marmita.id);
   const isCombo = marmita.categoria === 'Combo';
   const pratoNutricional = useMemo(() => {
-    if (!marmita.codigoPrato) {
-      return null;
-    }
-
-    const codigoNormalizado = Number(marmita.codigoPrato.replace(/\.$/, ''));
-
-    return listaNutricional.find((item) => item.id === codigoNormalizado) ?? null;
-  }, [marmita.codigoPrato]);
+    return listaNutricional.find((item) => item.id === marmita.id) ?? null;
+  }, [marmita.id]);
 
   useEffect(() => {
     if (!isPinned) {
@@ -54,39 +47,33 @@ export function MarmitaCard({ marmita, onMontarCombo }: MarmitaCardProps) {
     }
   };
 
+  const handleAumentarQuantidade = () => {
+    if (itemNoCarrinho) {
+      updateQuantity(marmita.id, 'increase');
+      return;
+    }
+
+    addToCart(marmita);
+  };
+
+  const handleDiminuirQuantidade = () => {
+    if (itemNoCarrinho) {
+      updateQuantity(marmita.id, 'decrease');
+    }
+  };
+
   return (
-    <div ref={cardRef} className={`bg-white rounded-2xl shadow-sm border overflow-hidden hover:shadow-md transition-all h-full flex flex-col relative ${
+    <div ref={cardRef} className={`font-sans bg-white rounded-2xl shadow-sm border overflow-hidden hover:shadow-md transition-all h-full flex flex-col relative ${
       isCombo ? 'border-[#7cb151] ring-1 ring-[#7cb151]/20' : 'border-gray-100'
     }`}>
       <TabelaNutricional
         prato={pratoNutricional}
-        isVisible={Boolean(pratoNutricional && (isInfoHovered || isPinned))}
+        isVisible={Boolean(pratoNutricional && isPinned)}
         isPinned={isPinned}
-        onMouseEnter={() => setIsInfoHovered(true)}
-        onMouseLeave={() => setIsInfoHovered(false)}
         onClose={() => {
           setIsPinned(false);
-          setIsInfoHovered(false);
         }}
       />
-
-      {pratoNutricional && (
-        <button
-          type="button"
-          aria-label={`Ver tabela nutricional de ${marmita.nome}`}
-          title="Tabela nutricional"
-          onMouseEnter={() => setIsInfoHovered(true)}
-          onMouseLeave={() => setIsInfoHovered(false)}
-          onFocus={() => setIsInfoHovered(true)}
-          onBlur={() => setIsInfoHovered(false)}
-          onClick={() => setIsPinned(true)}
-          className={`absolute bottom-3 right-3 z-40 flex h-9 w-9 items-center justify-center rounded-full border border-[#d1e7c5] bg-white/95 text-sm font-black text-[#59853a] shadow-md backdrop-blur-sm transition-all hover:bg-[#e9f5e1] hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#7cb151] focus:ring-offset-2 ${
-            isPinned ? 'bg-[#e9f5e1] ring-2 ring-[#7cb151]' : ''
-          }`}
-        >
-          i
-        </button>
-      )}
 
       
       {/* Selo Amarelo "GANHE" */}
@@ -118,23 +105,33 @@ export function MarmitaCard({ marmita, onMontarCombo }: MarmitaCardProps) {
       </div>
 
       {/* Conteúdo do Card */}
-      <div className="p-5 pb-14 flex-1 flex flex-col">
+      <div className="p-5 flex-1 flex flex-col">
         
         {/* AJUSTE AQUI: Container com altura mínima rigorosa para mobile */}
         <div className="min-h-[125px] md:min-h-0 flex flex-col w-full">
-          <h3 className="font-bold text-gray-800 text-lg mb-1 leading-tight line-clamp-2">
+          <h3 className="text-base font-bold text-gray-900 tracking-tight leading-snug line-clamp-2">
             {marmita.nome}
           </h3>
           
-          <p className="text-gray-500 text-sm line-clamp-2 leading-snug">
+          <p className="text-xs text-gray-500 font-normal mt-1 leading-relaxed line-clamp-3">
             {marmita.descricao}
           </p>
+
+          {pratoNutricional && (
+            <button
+              type="button"
+              onClick={() => setIsPinned(true)}
+              className="text-left text-xs font-medium text-green-600 hover:text-green-700 hover:underline mt-2 block transition-all"
+            >
+              Ver info nutricional
+            </button>
+          )}
         </div>
 
         {/* --- RODAPÉ DINÂMICO --- */}
         {/* mt-auto empurra este bloco para o fim da div p-5 */}
-        <div className={`flex mt-auto pt-4 border-t border-gray-50 ${
-          isCombo ? 'flex-col items-start gap-3' : 'flex-row items-center justify-between gap-2'
+        <div className={`mt-auto pt-4 border-t border-gray-50 ${
+          isCombo ? 'flex flex-col items-start gap-3' : 'flex items-center justify-between gap-3'
         }`}>
           
           <div className="flex flex-col shrink-0">
@@ -143,23 +140,24 @@ export function MarmitaCard({ marmita, onMontarCombo }: MarmitaCardProps) {
                 Valor do Pacote
               </span>
             )}
-            <span className="text-gray-900 font-black text-xl leading-none">
+            <span className="text-xl font-black text-gray-950 tracking-tight leading-none">
               R$ {marmita.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </span>
           </div>
 
-          {!isCombo && itemNoCarrinho ? (
-            <div className="flex items-center gap-2 bg-[#e9f5e1] p-1 rounded-lg border border-[#d1e7c5] shrink-0">
+          {!isCombo ? (
+            <div className="flex items-center overflow-hidden rounded-xl border border-[#d1e7c5] bg-white shadow-sm shrink-0">
               <button 
-                onClick={() => updateQuantity(marmita.id, 'decrease')}
-                className="w-8 h-8 flex items-center justify-center bg-white text-[#59853a] rounded-md shadow-sm hover:bg-gray-50 font-bold"
+                onClick={handleDiminuirQuantidade}
+                disabled={!itemNoCarrinho}
+                className="w-8 h-8 flex items-center justify-center bg-[#7cb151] text-white font-bold transition-colors hover:bg-[#59853a] disabled:cursor-not-allowed disabled:bg-[#7cb151]/60"
               >-</button>
-              <span className="font-bold text-[#59853a] min-w-[20px] text-center">
-                {itemNoCarrinho.quantidade}
+              <span className="font-bold text-gray-900 min-w-[30px] text-center text-sm">
+                {itemNoCarrinho?.quantidade ?? 0}
               </span>
               <button 
-                onClick={() => updateQuantity(marmita.id, 'increase')}
-                className="w-8 h-8 flex items-center justify-center bg-[#7cb151] text-white rounded-md shadow-sm hover:bg-[#59853a] font-bold"
+                onClick={handleAumentarQuantidade}
+                className="w-8 h-8 flex items-center justify-center bg-[#7cb151] text-white font-bold transition-colors hover:bg-[#59853a]"
               >+</button>
             </div>
           ) : (
@@ -169,7 +167,7 @@ export function MarmitaCard({ marmita, onMontarCombo }: MarmitaCardProps) {
                 isCombo ? 'w-full py-3.5 border-b-4 border-[#4d752d] active:border-b-0 active:translate-y-1' : ''
               }`}
             >
-              {isCombo ? '📦 Montar meu Combo' : '🛒 Adicionar'}
+              {isCombo ? 'Montar meu Combo' : 'Adicionar'}
             </button>
           )}
         </div>

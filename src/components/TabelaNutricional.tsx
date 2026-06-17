@@ -4,8 +4,6 @@ interface TabelaNutricionalProps {
   prato: PratoNutricional | null;
   isVisible: boolean;
   isPinned: boolean;
-  onMouseEnter?: () => void;
-  onMouseLeave?: () => void;
   onClose: () => void;
 }
 
@@ -30,8 +28,6 @@ export function TabelaNutricional({
   prato,
   isVisible,
   isPinned,
-  onMouseEnter,
-  onMouseLeave,
   onClose,
 }: TabelaNutricionalProps) {
   if (!prato) {
@@ -40,8 +36,6 @@ export function TabelaNutricional({
 
   return (
     <div
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
       className={`absolute inset-0 z-30 flex flex-col bg-white/95 p-4 backdrop-blur-md transition-none ${
         isVisible ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
       }`}
@@ -51,7 +45,7 @@ export function TabelaNutricional({
           <span className="text-[10px] font-black uppercase tracking-widest text-[#59853a]">
             Tabela Nutricional
           </span>
-          <h4 className="mt-1 line-clamp-2 text-sm font-black leading-tight text-gray-900">
+          <h4 className="mt-1 text-sm font-black leading-tight text-gray-900 break-words">
             {prato.nome}
           </h4>
         </div>
@@ -67,7 +61,7 @@ export function TabelaNutricional({
         )}
       </div>
 
-      <div className="min-h-0 flex-1 max-h-[calc(100%-4.5rem)] overflow-y-auto pr-1">
+      <div className="min-h-0 flex-1 overflow-y-auto pr-1">
         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white/80">
           {linhasNutricionais.map((linha) => (
             <div
