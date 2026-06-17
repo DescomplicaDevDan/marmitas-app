@@ -134,7 +134,7 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
               value={buscaCombo}
               onChange={(event) => setBuscaCombo(event.target.value)}
               placeholder="Buscar marmita no combo"
-              className="w-full rounded-2xl border border-gray-100 bg-white py-3 pl-11 pr-4 text-sm font-medium text-gray-700 outline-none transition-all placeholder:text-gray-400 focus:border-[#7cb151] focus:ring-4 focus:ring-[#7cb151]/10"
+              className="ui-input bg-white pl-11"
             />
           </div>
           <CategoryFilter 
@@ -157,7 +157,12 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
                 }`}>
                   <div className="flex min-w-0 items-center gap-3">
                     <div className="relative shrink-0">
-                      <img src={marmita.imagem} className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover" alt={marmita.nome} />
+                      <img
+                        src={marmita.imagem}
+                        className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover"
+                        alt={marmita.nome}
+                        loading="lazy"
+                      />
                       {qtdNoCombo > 0 && (
                         <div className="absolute -top-2 -right-2 bg-[#7cb151] text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold border-2 border-white">
                           {qtdNoCombo}
@@ -197,8 +202,24 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
               );
             })
           ) : (
-            <div className="text-center py-10 text-gray-400 text-sm italic">
-              Nenhuma marmita encontrada nesta categoria.
+            <div className="ui-empty-state py-10">
+              <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-[#e9f5e1] text-[#59853a]">
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  className="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.4"
+                >
+                  <circle cx="11" cy="11" r="7" />
+                  <path d="m16 16 4 4" />
+                </svg>
+              </div>
+              <h3 className="font-black text-gray-800">Nenhuma marmita encontrada</h3>
+              <p className="mt-2 text-sm text-gray-500">
+                Tente outro nome, ingrediente ou categoria.
+              </p>
             </div>
           )}
         </div>

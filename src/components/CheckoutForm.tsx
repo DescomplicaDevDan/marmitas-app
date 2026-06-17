@@ -1,7 +1,15 @@
 import React, { useState } from 'react';
 import { useCart } from '../contexts/CartContext';
-import type { CheckoutFormData, CartItem } from '../types';
+import type { CheckoutFormData, CartItem, EscolhaCombo } from '../types';
 import { ENABLE_PROGRESSIVE_BONUS } from './Cart';
+
+type FormaPagamento = CheckoutFormData['formaPagamento'];
+
+const paymentOptions: { value: FormaPagamento; label: string }[] = [
+  { value: 'pix', label: 'PIX' },
+  { value: 'cartao de crédito', label: 'Crédito' },
+  { value: 'Cartão de débito', label: 'Débito' },
+];
 
 export function CheckoutForm() {
   const { cart, totalItems, totalPrice, clearCart } = useCart();
@@ -38,7 +46,7 @@ export function CheckoutForm() {
       textoItensCozinha += combos.map((item: CartItem) => {
         let textoCombo = `[COMBO] ${item.nome} (QTD: ${item.quantidade})\n`;
         textoCombo += `Composição:\n`;
-        const escolhas = item.escolhas?.map((esc: any) => 
+        const escolhas = item.escolhas?.map((esc: EscolhaCombo) => 
           `  > ${esc.quantidade}x [${esc.codigoPrato || 'S/C'}] ${esc.nome}`
         ).join('\n') || '';
         return textoCombo + escolhas;
@@ -109,105 +117,159 @@ export function CheckoutForm() {
   };
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
-      <h3 className="text-xl font-black text-gray-800 mb-4 uppercase tracking-tight">Finalizar Pedido</h3>
-      
-      <form onSubmit={handleSubmit} className="space-y-3">
-        <input 
-          required
-          placeholder="Nome Completo"
-          value={formData.nome}
-          className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-[#7cb151] transition-all"
-          onChange={e => setFormData({...formData, nome: e.target.value})}
-        />
+    <div className="ui-card p-5 sm:p-6">
+      <div className="mb-5 flex items-start justify-between gap-3">
+        <div>
+          <p className="ui-section-title">Checkout</p>
+          <h3 className="text-xl font-black tracking-tight text-gray-900">Finalizar pedido</h3>
+        </div>
+        <span className="rounded-full bg-[#e9f5e1] px-3 py-1 text-xs font-black text-[#59853a]">
+          {totalPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+        </span>
+      </div>
 
-        <input 
-          required
-          type="text"
-          placeholder="CPF (apenas números)"
-          value={formData.CPF}
-          className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-[#7cb151] transition-all"
-          onChange={e => setFormData({...formData, CPF: apenasNumeros(e.target.value).slice(0, 11)})}
-        />
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <section className="space-y-3">
+          <div className="flex items-center gap-2">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#e9f5e1] text-[#59853a]">
+              <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.4">
+                <circle cx="12" cy="8" r="4" />
+                <path d="M4 21a8 8 0 0 1 16 0" />
+              </svg>
+            </span>
+            <p className="text-sm font-black text-gray-900">Dados pessoais</p>
+          </div>
 
-        <input 
-          required
-          type="tel"
-          placeholder="WhatsApp (apenas números)"
-          value={formData.telefone}
-          className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-[#7cb151] transition-all"
-          onChange={e => setFormData({...formData, telefone: apenasNumeros(e.target.value).slice(0, 11)})}
-        />
+          <input
+            required
+            placeholder="Nome completo"
+            value={formData.nome}
+            className="ui-input"
+            onChange={e => setFormData({ ...formData, nome: e.target.value })}
+          />
 
-        <div className="grid grid-cols-4 gap-2">
-          <div className="col-span-3">
-            <input 
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <input
               required
-              placeholder="Endereço (Rua/Av)"
-              value={formData.endereco}
-              className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-[#7cb151] transition-all"
-              onChange={e => setFormData({...formData, endereco: e.target.value})}
+              type="text"
+              placeholder="CPF"
+              value={formData.CPF}
+              className="ui-input"
+              onChange={e => setFormData({ ...formData, CPF: apenasNumeros(e.target.value).slice(0, 11) })}
+            />
+
+            <input
+              required
+              type="tel"
+              placeholder="WhatsApp"
+              value={formData.telefone}
+              className="ui-input"
+              onChange={e => setFormData({ ...formData, telefone: apenasNumeros(e.target.value).slice(0, 11) })}
             />
           </div>
-          <div className="col-span-1">
-            <input 
+        </section>
+
+        <section className="space-y-3 border-t border-gray-100 pt-5">
+          <div className="flex items-center gap-2">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#e9f5e1] text-[#59853a]">
+              <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.4">
+                <path d="M3 10.5 12 3l9 7.5" />
+                <path d="M5 9.5V21h14V9.5" />
+                <path d="M9 21v-7h6v7" />
+              </svg>
+            </span>
+            <p className="text-sm font-black text-gray-900">Entrega</p>
+          </div>
+
+          <div className="grid grid-cols-4 gap-3">
+            <input
+              required
+              placeholder="Endereço"
+              value={formData.endereco}
+              className="ui-input col-span-3"
+              onChange={e => setFormData({ ...formData, endereco: e.target.value })}
+            />
+            <input
               required
               placeholder="Nº"
               value={formData.nº}
-              className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-[#7cb151] transition-all"
-              onChange={e => setFormData({...formData, nº: apenasNumeros(e.target.value)})}
+              className="ui-input col-span-1 px-3 text-center"
+              onChange={e => setFormData({ ...formData, nº: apenasNumeros(e.target.value) })}
             />
           </div>
-        </div>
 
-        <input 
-          required 
-          placeholder="CEP (apenas números)" 
-          value={formData.cep}
-          className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-[#7cb151] transition-all" 
-          onChange={e => setFormData({...formData, cep: apenasNumeros(e.target.value).slice(0, 8)})} 
-        />
-
-        <div className="grid grid-cols-2 gap-2">
-          <input 
-            required 
-            placeholder="Bairro" 
-            value={formData.bairro}
-            className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-[#7cb151] transition-all" 
-            onChange={e => setFormData({...formData, bairro: e.target.value})} 
+          <input
+            required
+            placeholder="CEP"
+            value={formData.cep}
+            className="ui-input"
+            onChange={e => setFormData({ ...formData, cep: apenasNumeros(e.target.value).slice(0, 8) })}
           />
-          <input 
-            required 
-            placeholder="Cidade" 
-            value={formData.cidade}
-            className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-[#7cb151] transition-all" 
-            onChange={e => setFormData({...formData, cidade: e.target.value})} 
+
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <input
+              required
+              placeholder="Bairro"
+              value={formData.bairro}
+              className="ui-input"
+              onChange={e => setFormData({ ...formData, bairro: e.target.value })}
+            />
+            <input
+              required
+              placeholder="Cidade"
+              value={formData.cidade}
+              className="ui-input"
+              onChange={e => setFormData({ ...formData, cidade: e.target.value })}
+            />
+          </div>
+        </section>
+
+        <section className="space-y-3 border-t border-gray-100 pt-5">
+          <div className="flex items-center gap-2">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#e9f5e1] text-[#59853a]">
+              <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.4">
+                <rect x="3" y="5" width="18" height="14" rx="3" />
+                <path d="M3 10h18" />
+                <path d="M7 15h4" />
+              </svg>
+            </span>
+            <p className="text-sm font-black text-gray-900">Pagamento</p>
+          </div>
+
+          <div className="grid grid-cols-3 gap-2 rounded-2xl bg-gray-50 p-1">
+            {paymentOptions.map((option) => {
+              const isSelected = formData.formaPagamento === option.value;
+              return (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => setFormData({ ...formData, formaPagamento: option.value })}
+                  className={`rounded-xl px-3 py-3 text-xs font-black transition-all ${
+                    isSelected
+                      ? 'bg-[#7cb151] text-white shadow-sm'
+                      : 'text-gray-500 hover:bg-white hover:text-[#59853a]'
+                  }`}
+                >
+                  {option.label}
+                </button>
+              );
+            })}
+          </div>
+
+          <textarea
+            placeholder="Observações do pedido"
+            value={formData.observacoes}
+            className="ui-input h-24 resize-none"
+            onChange={e => setFormData({ ...formData, observacoes: e.target.value })}
           />
-        </div>
+        </section>
 
-        <select 
-          value={formData.formaPagamento}
-          className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-[#7cb151] font-bold text-gray-700 cursor-pointer"
-          onChange={e => setFormData({...formData, formaPagamento: e.target.value as any})}
-        >
-          <option value="pix">Pagamento: PIX</option>
-          <option value="cartao de crédito">Cartão de Crédito</option>
-          <option value="Cartão de débito">Cartão de Débito</option>
-        </select>
-
-        <textarea 
-          placeholder="Observações? (ex: sem cebola)" 
-          value={formData.observacoes}
-          className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-[#7cb151] resize-none h-24 transition-all" 
-          onChange={e => setFormData({...formData, observacoes: e.target.value})} 
-        />
-
-        <button 
+        <button
           type="submit"
           disabled={totalItems === 0}
-          className="w-full bg-[#7cb151] hover:bg-[#59853a] disabled:bg-gray-300 text-white py-4 rounded-xl font-black text-lg transition-all shadow-md active:scale-95 uppercase"
+          className="ui-button-primary w-full text-base uppercase"
         >
-          {totalItems === 0 ? 'Carrinho Vazio' : 'Enviar Pedido'}
+          {totalItems === 0 ? 'Carrinho vazio' : 'Enviar pedido'}
         </button>
       </form>
     </div>

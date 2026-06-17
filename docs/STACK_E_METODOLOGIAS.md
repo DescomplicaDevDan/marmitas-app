@@ -33,6 +33,20 @@ Este documento resume as principais tecnologias, bibliotecas, padrões e decisõ
 
 ## Decisões de Arquitetura
 
+### Design System Enxuto
+
+O projeto utiliza uma camada simples de classes reutilizáveis em `src/index.css` para manter consistência sem adicionar bibliotecas externas:
+
+| Classe | Uso |
+| :--- | :--- |
+| `ui-card` | Containers principais, carrinho, checkout e painéis de interface. |
+| `ui-card-soft` | Cards de apoio com destaque institucional em verde claro. |
+| `ui-input` | Inputs e campos de busca com foco padronizado. |
+| `ui-button-primary` | Botões principais de conversão. |
+| `ui-button-secondary` | Ações secundárias e estados vazios. |
+| `ui-section-title` | Rótulos curtos de seção com hierarquia discreta. |
+| `ui-empty-state` | Estados vazios profissionais para busca, carrinho e filtros. |
+
 ### Componentização
 
 A aplicação foi organizada em componentes com responsabilidades claras:
@@ -70,6 +84,10 @@ O vínculo entre marmita e tabela nutricional utiliza o `id` canônico do produt
 * Toast com fade-out e transparência para confirmar ações sem interromper a navegação.
 * Barra fixa mobile com total, quantidade de itens e acesso rápido ao pedido.
 * Modal de combos otimizado para mobile, com busca interna, cards compactos, progresso visual e controles proporcionais.
+* Carrinho refinado com cards internos, estado vazio profissional, total destacado e composição de combos organizada.
+* Checkout por seções para reduzir carga cognitiva: Dados pessoais, Entrega e Pagamento.
+* Ícones SVG consistentes no lugar de emojis decorativos em pontos críticos da interface.
+* Imagens com recorte consistente e carregamento preguiçoso para melhorar percepção de performance.
 
 ### Integridade de Dados
 

@@ -132,7 +132,18 @@ export function Cardapio() {
               onClick={scrollToCart}
               className="bg-[#e9f5e1] text-[#59853a] px-3 py-2 lg:px-4 lg:py-2 rounded-full font-bold shadow-sm border border-[#d1e7c5] flex items-center gap-2 hover:scale-105 active:scale-95 transition-all cursor-pointer"
             >
-              <span className="text-lg lg:text-xl">🛒</span>
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                className="h-4 w-4 lg:h-5 lg:w-5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.4"
+              >
+                <path d="M6 7h15l-1.6 8.2a2 2 0 0 1-2 1.6H9a2 2 0 0 1-2-1.7L5.2 4H3" />
+                <circle cx="9" cy="20" r="1" />
+                <circle cx="18" cy="20" r="1" />
+              </svg>
               <span className="text-xs lg:text-base">Itens: {totalItems}</span>
             </button>
           </div>
@@ -140,8 +151,8 @@ export function Cardapio() {
       </header>
 
       <main className="w-full max-w-7xl mx-auto px-4 pb-28 lg:pb-12 flex-grow">
-        <div className="w-full mb-8 bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-          <p className="text-[10px] font-black text-gray-400 uppercase mb-3 tracking-widest text-center md:text-left">
+        <div className="ui-card w-full mb-8 p-4">
+          <p className="ui-section-title mb-3 text-center md:text-left">
             Explorar Cardápio Nutricomp
           </p>
           <div className="relative mb-4">
@@ -161,7 +172,7 @@ export function Cardapio() {
               value={searchTerm}
               onChange={(event) => setSearchTerm(event.target.value)}
               placeholder="Buscar por prato ou ingrediente"
-              className="w-full rounded-2xl border border-gray-100 bg-gray-50 py-3 pl-11 pr-4 text-sm font-medium text-gray-700 outline-none transition-all placeholder:text-gray-400 focus:border-[#7cb151] focus:bg-white focus:ring-4 focus:ring-[#7cb151]/10"
+              className="ui-input pl-11"
             />
           </div>
           <CategoryFilter 
@@ -182,11 +193,43 @@ export function Cardapio() {
                   onFeedback={setFeedbackMessage}
                 />
               )) : (
-                <div className="sm:col-span-2 xl:col-span-3 rounded-2xl border border-dashed border-gray-200 bg-white p-8 text-center">
+                <div className="ui-empty-state sm:col-span-2 xl:col-span-3">
+                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#e9f5e1] text-[#59853a]">
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 24 24"
+                      className="h-5 w-5"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.4"
+                    >
+                      <circle cx="11" cy="11" r="7" />
+                      <path d="m16 16 4 4" />
+                    </svg>
+                  </div>
                   <h3 className="font-black text-gray-800">Nenhum prato encontrado</h3>
                   <p className="mt-2 text-sm text-gray-500">
                     Tente buscar por outro ingrediente ou selecionar outra categoria.
                   </p>
+                  <div className="mt-5 flex flex-col justify-center gap-2 sm:flex-row">
+                    <button
+                      type="button"
+                      onClick={() => setSearchTerm('')}
+                      className="ui-button-secondary"
+                    >
+                      Limpar busca
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSearchTerm('');
+                        setSelectedCategory('Todos');
+                      }}
+                      className="ui-button-primary"
+                    >
+                      Ver todos
+                    </button>
+                  </div>
                 </div>
               )}
             </div>

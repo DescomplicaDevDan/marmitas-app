@@ -104,6 +104,7 @@ export function MarmitaCard({ marmita, onMontarCombo, onFeedback }: MarmitaCardP
         <img 
           src={marmita.imagem} 
           alt={marmita.nome}
+          loading="lazy"
           className="w-full h-full object-cover"
         />
         <div className="absolute left-2 top-2 flex min-w-[54px] items-center justify-center rounded-full bg-white/85 px-2 py-1 shadow-sm ring-1 ring-white/50 backdrop-blur-md sm:left-3 sm:top-3 sm:min-w-0 sm:px-3">
