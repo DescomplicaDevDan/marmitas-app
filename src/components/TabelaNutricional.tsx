@@ -1,55 +1,87 @@
-import { useState } from 'react';
-import { listaNutricional, type PratoNutricional } from '../data/nutricao';
-import { Link } from 'react-router-dom';
+import { type PratoNutricional } from '../data/nutricao';
 
-export function TabelaNutricional() {
-  // Estado para saber qual prato foi clicado
-  const [pratoSelecionado, setPratoSelecionado] = useState<PratoNutricional | null>(null);
+interface TabelaNutricionalProps {
+  prato: PratoNutricional | null;
+  isVisible: boolean;
+  isPinned: boolean;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
+  onClose: () => void;
+}
+
+const linhasNutricionais: Array<{
+  label: string;
+  getValue: (prato: PratoNutricional) => string;
+}> = [
+  { label: 'Porção', getValue: (prato) => prato.porcao },
+  { label: 'Calorias', getValue: (prato) => `${prato.kcal.toLocaleString('pt-BR')} kcal` },
+  { label: 'Carboidratos', getValue: (prato) => prato.carboidratos },
+  { label: 'Proteínas', getValue: (prato) => prato.proteinas },
+  { label: 'Gorduras totais', getValue: (prato) => prato.gordurasTotais },
+  { label: 'Gordura saturada', getValue: (prato) => prato.gorduraSaturada },
+  { label: 'Gordura monoinsaturada', getValue: (prato) => prato.gorduraMonoinsaturada },
+  { label: 'Gordura poliinsaturada', getValue: (prato) => prato.gorduraPoliinsaturada },
+  { label: 'Gordura trans', getValue: (prato) => prato.gorduraTrans },
+  { label: 'Fibras', getValue: (prato) => prato.fibras },
+  { label: 'Sódio', getValue: (prato) => prato.sodio },
+];
+
+export function TabelaNutricional({
+  prato,
+  isVisible,
+  isPinned,
+  onMouseEnter,
+  onMouseLeave,
+  onClose,
+}: TabelaNutricionalProps) {
+  if (!prato) {
+    return null;
+  }
 
   return (
-    <div className="p-4 md:p-8 max-w-4xl mx-auto">
-      <Link to="/" className="text-sm text-gray-500 hover:underline mb-4 block">← Voltar para o cardápio</Link>
-      <h2 className="text-2xl font-bold mb-6">Tabela Nutricional</h2>
+    <div
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      className={`absolute inset-0 z-30 flex flex-col bg-white/95 p-4 backdrop-blur-md transition-none ${
+        isVisible ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+      }`}
+    >
+      <div className="mb-3 flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <span className="text-[10px] font-black uppercase tracking-widest text-[#59853a]">
+            Tabela Nutricional
+          </span>
+          <h4 className="mt-1 line-clamp-2 text-sm font-black leading-tight text-gray-900">
+            {prato.nome}
+          </h4>
+        </div>
 
-      {/* Lista de Pratos (Visível para todos) */}
-      <div className="grid gap-3">
-        {listaNutricional.map((item) => (
+        {isPinned && (
           <button
-            key={item.id}
-            onClick={() => setPratoSelecionado(item)}
-            className="w-full text-left p-4 bg-white border border-gray-200 rounded-xl shadow-sm hover:border-[#59853a] transition-all flex justify-between items-center"
+            type="button"
+            onClick={onClose}
+            className="shrink-0 rounded-lg bg-gray-900 px-3 py-2 text-xs font-bold text-white transition-colors hover:bg-gray-700"
           >
-            <span className="font-semibold text-gray-800">{item.nome}</span>
-            <span className="text-xs text-[#59853a] font-bold">VER DETALHES</span>
+            Fechar
           </button>
-        ))}
+        )}
       </div>
 
-      {/* Modal / Card de Detalhes (Aparece ao clicar) */}
-      {pratoSelecionado && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-sm p-6 animate-in zoom-in-95 duration-200">
-            <h3 className="text-xl font-bold mb-4">{pratoSelecionado.nome}</h3>
-            <div className="space-y-3 text-sm">
-              <p className="flex justify-between border-b pb-2"><span>Porção:</span> <b>{pratoSelecionado.porcao}</b></p>
-              <p className="flex justify-between border-b pb-2"><span>Calorias:</span> <b>{pratoSelecionado.kcal} kcal</b></p>
-              <p className="flex justify-between border-b pb-2"><span>Carboidratos:</span> <b>{pratoSelecionado.carboidratos}</b></p>
-              <p className="flex justify-between border-b pb-2"><span>Proteínas:</span> <b>{pratoSelecionado.proteinas}</b></p>
-              <p className="flex justify-between border-b pb-2"><span>Gord. Saturada:</span> <b>{pratoSelecionado.gorduraSaturada}</b></p>
-              <p className="flex justify-between border-b pb-2"><span>Gord. Mono:</span> <b>{pratoSelecionado.gorduraMonoinsaturada}</b></p>
-              <p className="flex justify-between border-b pb-2"><span>Gord. Poli:</span> <b>{pratoSelecionado.gorduraPoliinsaturada}</b></p>
-              <p className="flex justify-between border-b pb-2"><span>Fibras:</span> <b>{pratoSelecionado.fibras}</b></p>
-              <p className="flex justify-between border-b pb-2"><span>Sódio:</span> <b>{pratoSelecionado.sodio}</b></p>
-            </div>
-            <button 
-              onClick={() => setPratoSelecionado(null)}
-              className="w-full mt-6 bg-gray-100 py-3 rounded-lg font-bold text-gray-600"
+      <div className="min-h-0 flex-1 max-h-[calc(100%-4.5rem)] overflow-y-auto pr-1">
+        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white/80">
+          {linhasNutricionais.map((linha) => (
+            <div
+              key={linha.label}
+              className="flex items-center justify-between gap-3 border-b border-gray-100 px-3 py-2 text-xs last:border-b-0"
             >
-              Fechar
-            </button>
-          </div>
+              <span className="text-gray-500">{linha.label}</span>
+              <strong className="text-right font-black text-gray-800">
+                {linha.getValue(prato)}
+              </strong>
+            </div>
+          ))}
         </div>
-      )}
+      </div>
     </div>
   );
 }

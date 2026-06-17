@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom'; // Importante para o link funcionar
 import { MarmitaCard } from '../components/MarmitaCard';
 import { Cart } from '../components/Cart';
 import { CheckoutForm } from '../components/CheckoutForm';
@@ -77,10 +76,6 @@ export function Cardapio() {
         <div className="max-w-7xl mx-auto px-4 relative flex items-center justify-center">
           <div className="flex flex-col items-center justify-center transition-all duration-300">
             <img src={logo} alt="Nutricomp" className="h-20 lg:h-36 w-auto object-contain" />
-            {/* Link para a Tabela */}
-            <Link to="/tabela-nutricional" className="text-xs text-[#59853a] font-bold underline hover:text-[#4a6e30] mt-1">
-              Ver Tabela Nutricional
-            </Link>
           </div>
           
           <div className="absolute right-4 top-1/2 -translate-y-1/2">

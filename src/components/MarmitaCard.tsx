@@ -1,6 +1,9 @@
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { type Marmita } from '../types';
 import { useCart } from '../contexts/CartContext';
 import { ENABLE_PROGRESSIVE_BONUS } from './Cart';
+import { listaNutricional } from '../data/nutricao';
+import { TabelaNutricional } from './TabelaNutricional';
 
 interface MarmitaCardProps {
   marmita: Marmita;
@@ -9,9 +12,39 @@ interface MarmitaCardProps {
 
 export function MarmitaCard({ marmita, onMontarCombo }: MarmitaCardProps) {
   const { addToCart, cart, updateQuantity } = useCart();
+  const [isPinned, setIsPinned] = useState(false);
+  const [isInfoHovered, setIsInfoHovered] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const itemNoCarrinho = cart.find((item) => item.id === marmita.id);
   const isCombo = marmita.categoria === 'Combo';
+  const pratoNutricional = useMemo(() => {
+    if (!marmita.codigoPrato) {
+      return null;
+    }
+
+    const codigoNormalizado = Number(marmita.codigoPrato.replace(/\.$/, ''));
+
+    return listaNutricional.find((item) => item.id === codigoNormalizado) ?? null;
+  }, [marmita.codigoPrato]);
+
+  useEffect(() => {
+    if (!isPinned) {
+      return;
+    }
+
+    const handleClickFora = (event: MouseEvent) => {
+      if (cardRef.current && !cardRef.current.contains(event.target as Node)) {
+        setIsPinned(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickFora);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickFora);
+    };
+  }, [isPinned]);
 
   const handleAcaoBotao = () => {
     if (isCombo) {
@@ -22,9 +55,39 @@ export function MarmitaCard({ marmita, onMontarCombo }: MarmitaCardProps) {
   };
 
   return (
-    <div className={`bg-white rounded-2xl shadow-sm border overflow-hidden hover:shadow-md transition-all h-full flex flex-col relative ${
+    <div ref={cardRef} className={`bg-white rounded-2xl shadow-sm border overflow-hidden hover:shadow-md transition-all h-full flex flex-col relative ${
       isCombo ? 'border-[#7cb151] ring-1 ring-[#7cb151]/20' : 'border-gray-100'
     }`}>
+      <TabelaNutricional
+        prato={pratoNutricional}
+        isVisible={Boolean(pratoNutricional && (isInfoHovered || isPinned))}
+        isPinned={isPinned}
+        onMouseEnter={() => setIsInfoHovered(true)}
+        onMouseLeave={() => setIsInfoHovered(false)}
+        onClose={() => {
+          setIsPinned(false);
+          setIsInfoHovered(false);
+        }}
+      />
+
+      {pratoNutricional && (
+        <button
+          type="button"
+          aria-label={`Ver tabela nutricional de ${marmita.nome}`}
+          title="Tabela nutricional"
+          onMouseEnter={() => setIsInfoHovered(true)}
+          onMouseLeave={() => setIsInfoHovered(false)}
+          onFocus={() => setIsInfoHovered(true)}
+          onBlur={() => setIsInfoHovered(false)}
+          onClick={() => setIsPinned(true)}
+          className={`absolute bottom-3 right-3 z-40 flex h-9 w-9 items-center justify-center rounded-full border border-[#d1e7c5] bg-white/95 text-sm font-black text-[#59853a] shadow-md backdrop-blur-sm transition-all hover:bg-[#e9f5e1] hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#7cb151] focus:ring-offset-2 ${
+            isPinned ? 'bg-[#e9f5e1] ring-2 ring-[#7cb151]' : ''
+          }`}
+        >
+          i
+        </button>
+      )}
+
       
       {/* Selo Amarelo "GANHE" */}
       {ENABLE_PROGRESSIVE_BONUS && isCombo && (
@@ -55,7 +118,7 @@ export function MarmitaCard({ marmita, onMontarCombo }: MarmitaCardProps) {
       </div>
 
       {/* Conteúdo do Card */}
-      <div className="p-5 flex-1 flex flex-col">
+      <div className="p-5 pb-14 flex-1 flex flex-col">
         
         {/* AJUSTE AQUI: Container com altura mínima rigorosa para mobile */}
         <div className="min-h-[125px] md:min-h-0 flex flex-col w-full">
