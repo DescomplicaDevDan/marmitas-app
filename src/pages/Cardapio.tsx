@@ -11,7 +11,7 @@ import { type Marmita, type EscolhaCombo } from '../types';
 import logo from '../assets/Logo.png';
 
 export function Cardapio() {
-  const { totalItems, addToCart } = useCart();
+  const { totalItems, totalPrice, addToCart } = useCart();
   const [comboSendoMontado, setComboSendoMontado] = useState<Marmita | null>(null);
   const [mostrarCheckout, setMostrarCheckout] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('Todos');
@@ -115,7 +115,7 @@ export function Cardapio() {
         </div>
       </header>
 
-      <main className="w-full max-w-7xl mx-auto px-4 pb-12 flex-grow">
+      <main className="w-full max-w-7xl mx-auto px-4 pb-28 lg:pb-12 flex-grow">
         <div className="w-full mb-8 bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
           <p className="text-[10px] font-black text-gray-400 uppercase mb-3 tracking-widest text-center md:text-left">
             Explorar Cardápio Nutricomp
@@ -182,6 +182,29 @@ export function Cardapio() {
       </main>
 
       <Footer />
+
+      {totalItems > 0 && (
+        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#d1e7c5] bg-white/95 px-4 py-3 shadow-[0_-12px_30px_rgba(15,23,42,0.12)] backdrop-blur-md lg:hidden">
+          <div className="mx-auto flex max-w-md items-center justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                Meu pedido
+              </p>
+              <p className="text-sm font-black text-gray-950">
+                {totalItems} {totalItems === 1 ? 'item' : 'itens'} · {totalPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={scrollToCart}
+              className="shrink-0 rounded-2xl bg-[#7cb151] px-5 py-3 text-sm font-black text-white shadow-lg shadow-green-100 transition-all active:scale-95"
+            >
+              Ver pedido
+            </button>
+          </div>
+        </div>
+      )}
 
       {comboSendoMontado && (
         <ComboModal 

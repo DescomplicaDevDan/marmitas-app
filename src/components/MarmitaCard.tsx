@@ -17,6 +17,8 @@ export function MarmitaCard({ marmita, onMontarCombo }: MarmitaCardProps) {
 
   const itemNoCarrinho = cart.find((item) => item.id === marmita.id);
   const isCombo = marmita.categoria === 'Combo';
+  const comboNoCarrinho = isCombo && cart.some((item) => item.categoria === 'Combo' && item.nome === marmita.nome);
+  const isNoCarrinho = Boolean(itemNoCarrinho || comboNoCarrinho);
   const pratoNutricional = useMemo(() => {
     return listaNutricional.find((item) => item.id === marmita.id) ?? null;
   }, [marmita.id]);
@@ -63,8 +65,12 @@ export function MarmitaCard({ marmita, onMontarCombo }: MarmitaCardProps) {
   };
 
   return (
-    <div ref={cardRef} className={`font-sans bg-white shadow-sm border overflow-hidden hover:shadow-md transition-all h-full relative flex flex-row sm:flex-col gap-2 sm:gap-0 rounded-2xl p-2 sm:p-0 ${
-      isCombo ? 'border-[#7cb151] ring-1 ring-[#7cb151]/20' : 'border-gray-100'
+    <div ref={cardRef} className={`font-sans shadow-sm border overflow-hidden hover:shadow-md transition-all h-full relative flex flex-row sm:flex-col gap-2 sm:gap-0 rounded-2xl p-2 sm:p-0 ${
+      isNoCarrinho ? 'bg-[#f7fbf4] border-[#7cb151] ring-1 ring-[#7cb151]/25' : 'bg-white'
+    } ${
+      isCombo && !isNoCarrinho ? 'border-[#7cb151] ring-1 ring-[#7cb151]/20' : ''
+    } ${
+      !isCombo && !isNoCarrinho ? 'border-gray-100' : ''
     }`}>
       <TabelaNutricional
         prato={pratoNutricional}
@@ -108,6 +114,11 @@ export function MarmitaCard({ marmita, onMontarCombo }: MarmitaCardProps) {
       <div className="min-w-0 flex-1 flex flex-col py-1 pr-1 sm:p-4">
         
         <div className="flex flex-col w-full">
+          {isNoCarrinho && (
+            <span className="mb-1 w-fit rounded-full bg-[#e9f5e1] px-2 py-0.5 text-[8px] sm:text-[9px] font-black uppercase tracking-wide text-[#59853a]">
+              No carrinho
+            </span>
+          )}
           <h3 className="text-[11px] sm:text-[13px] font-bold text-gray-900 tracking-tight leading-snug break-words">
             {marmita.nome}
           </h3>

@@ -64,6 +64,9 @@ O vínculo entre marmita e tabela nutricional utiliza o `id` canônico do produt
 * Preço posicionado no rodapé para melhorar escaneabilidade em grid.
 * Controle de quantidade direto no card, reduzindo fricção no fluxo de compra.
 * Informação nutricional sob demanda, evitando poluição visual no card principal.
+* Busca local por prato, ingrediente, descrição e categoria para acelerar a descoberta no cardápio.
+* Layout horizontal compacto para cards em telas pequenas, preservando o layout em grid para tablet e desktop.
+* Modal de combos otimizado para mobile, com cards internos mais compactos, progresso visível e controles proporcionais.
 
 ### Integridade de Dados
 
@@ -86,6 +89,8 @@ O vínculo entre marmita e tabela nutricional utiliza o `id` canônico do produt
 * Grid responsivo para diferentes larguras de tela.
 * Cards com `h-full`, `flex flex-col` e `mt-auto` para manter rodapés alinhados.
 * Tipografia ajustada para preservar nomes completos sem tornar o card excessivamente alto.
+* Breakpoints usados para alternar entre card horizontal no mobile e card vertical em telas maiores.
+* Tabela nutricional com painel compacto no mobile e overlay interno no desktop.
 
 ### Checkout e Produção
 
