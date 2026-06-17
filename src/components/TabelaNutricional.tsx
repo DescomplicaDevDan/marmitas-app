@@ -36,7 +36,7 @@ export function TabelaNutricional({
 
   return (
     <div
-      className={`absolute inset-0 z-30 flex flex-col bg-white/95 p-4 backdrop-blur-md transition-none ${
+      className={`fixed inset-x-4 top-20 z-50 my-auto flex max-h-[calc(100vh-7rem)] flex-col rounded-2xl border border-gray-100 bg-white/95 p-4 shadow-2xl backdrop-blur-md transition-none sm:absolute sm:inset-0 sm:z-30 sm:max-h-none sm:rounded-none sm:border-0 sm:shadow-none ${
         isVisible ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
       }`}
     >
@@ -61,7 +61,7 @@ export function TabelaNutricional({
         )}
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+      <div className="min-h-0 overflow-y-auto pr-1">
         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white/80">
           {linhasNutricionais.map((linha) => (
             <div

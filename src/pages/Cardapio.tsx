@@ -15,15 +15,40 @@ export function Cardapio() {
   const [comboSendoMontado, setComboSendoMontado] = useState<Marmita | null>(null);
   const [mostrarCheckout, setMostrarCheckout] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('Todos');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const categorias = useMemo(() => {
     return Array.from(new Set(marmitas.map(m => m.categoria)));
   }, []);
 
   const marmitasFiltradas = useMemo(() => {
-    const filtradas = marmitas.filter(m => 
-      selectedCategory === 'Todos' ? true : m.categoria === selectedCategory
-    );
+    const termoNormalizado = searchTerm
+      .trim()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+
+    const filtradas = marmitas.filter((m) => {
+      const matchesCategoria = selectedCategory === 'Todos' ? true : m.categoria === selectedCategory;
+
+      if (!termoNormalizado) {
+        return matchesCategoria;
+      }
+
+      const textoBusca = [
+        m.nome,
+        m.descricao,
+        m.ingredientes,
+        m.categoria,
+      ]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+
+      return matchesCategoria && textoBusca.includes(termoNormalizado);
+    });
 
     if (selectedCategory === 'Todos') {
       return [...filtradas].sort((a, b) => {
@@ -35,7 +60,7 @@ export function Cardapio() {
       });
     }
     return filtradas;
-  }, [selectedCategory]);
+  }, [selectedCategory, searchTerm]);
 
   useEffect(() => {
     if (totalItems === 0) {
@@ -95,6 +120,26 @@ export function Cardapio() {
           <p className="text-[10px] font-black text-gray-400 uppercase mb-3 tracking-widest text-center md:text-left">
             Explorar Cardápio Nutricomp
           </p>
+          <div className="relative mb-4">
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#7cb151]"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.4"
+            >
+              <circle cx="11" cy="11" r="7" />
+              <path d="m16 16 4 4" />
+            </svg>
+            <input
+              type="search"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              placeholder="Buscar por prato ou ingrediente"
+              className="w-full rounded-2xl border border-gray-100 bg-gray-50 py-3 pl-11 pr-4 text-sm font-medium text-gray-700 outline-none transition-all placeholder:text-gray-400 focus:border-[#7cb151] focus:bg-white focus:ring-4 focus:ring-[#7cb151]/10"
+            />
+          </div>
           <CategoryFilter 
             categories={categorias} 
             selectedCategory={selectedCategory} 
@@ -105,13 +150,20 @@ export function Cardapio() {
         <div className="flex flex-col lg:flex-row gap-8 items-start w-full">
           <div className="flex-1 w-full min-w-0">
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 items-stretch">
-              {marmitasFiltradas.map((item) => (
+              {marmitasFiltradas.length > 0 ? marmitasFiltradas.map((item) => (
                 <MarmitaCard 
                   key={item.id} 
                   marmita={item} 
                   onMontarCombo={(m) => setComboSendoMontado(m)} 
                 />
-              ))}
+              )) : (
+                <div className="sm:col-span-2 xl:col-span-3 rounded-2xl border border-dashed border-gray-200 bg-white p-8 text-center">
+                  <h3 className="font-black text-gray-800">Nenhum prato encontrado</h3>
+                  <p className="mt-2 text-sm text-gray-500">
+                    Tente buscar por outro ingrediente ou selecionar outra categoria.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
           

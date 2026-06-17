@@ -63,7 +63,7 @@ export function MarmitaCard({ marmita, onMontarCombo }: MarmitaCardProps) {
   };
 
   return (
-    <div ref={cardRef} className={`font-sans bg-white rounded-2xl shadow-sm border overflow-hidden hover:shadow-md transition-all h-full flex flex-col relative ${
+    <div ref={cardRef} className={`font-sans bg-white shadow-sm border overflow-hidden hover:shadow-md transition-all h-full relative flex flex-row sm:flex-col gap-2 sm:gap-0 rounded-2xl p-2 sm:p-0 ${
       isCombo ? 'border-[#7cb151] ring-1 ring-[#7cb151]/20' : 'border-gray-100'
     }`}>
       <TabelaNutricional
@@ -91,38 +91,38 @@ export function MarmitaCard({ marmita, onMontarCombo }: MarmitaCardProps) {
       )}
 
       {/* Imagem da Marmita */}
-      <div className="relative h-44 w-full shrink-0">
+      <div className="relative h-[104px] w-[104px] shrink-0 overflow-hidden rounded-xl sm:h-44 sm:w-full sm:rounded-none">
         <img 
           src={marmita.imagem} 
           alt={marmita.nome}
           className="w-full h-full object-cover"
         />
-        <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full shadow-sm">
-          <span className="text-[10px] font-bold text-[#59853a] uppercase tracking-wider">
+        <div className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-white/90 backdrop-blur-sm px-2.5 sm:px-3 py-1 rounded-full shadow-sm">
+          <span className="text-[9px] sm:text-[10px] font-bold text-[#59853a] uppercase tracking-wider">
             {marmita.categoria}
           </span>
         </div>
       </div>
 
       {/* Conteúdo do Card */}
-      <div className="p-4 flex-1 flex flex-col">
+      <div className="min-w-0 flex-1 flex flex-col py-1 pr-1 sm:p-4">
         
         <div className="flex flex-col w-full">
-          <h3 className="text-[13px] font-bold text-gray-900 tracking-tight leading-snug break-words">
+          <h3 className="text-[11px] sm:text-[13px] font-bold text-gray-900 tracking-tight leading-snug break-words">
             {marmita.nome}
           </h3>
           
-          <p className="text-[11px] sm:text-xs text-gray-500 font-normal mt-1 leading-relaxed line-clamp-2">
+          <p className="text-[9px] sm:text-xs text-gray-500 font-normal mt-1 leading-relaxed line-clamp-2">
             {marmita.descricao}
           </p>
         </div>
 
-        <div className="mt-auto pt-2 mb-1 min-h-[16px]">
+        <div className="mt-auto pt-1 sm:pt-2 mb-0.5 sm:mb-1 min-h-[13px] sm:min-h-[16px]">
           {pratoNutricional && (
             <button
               type="button"
               onClick={() => setIsPinned(true)}
-              className="text-left text-[11px] sm:text-xs font-medium text-green-600 hover:text-green-700 hover:underline block transition-all"
+              className="text-left text-[9px] sm:text-xs font-medium text-green-600 hover:text-green-700 hover:underline block transition-all"
             >
               Ver info nutricional
             </button>
@@ -132,16 +132,16 @@ export function MarmitaCard({ marmita, onMontarCombo }: MarmitaCardProps) {
         {/* --- RODAPÉ DINÂMICO --- */}
         {/* mt-auto empurra este bloco para o fim da div p-5 */}
         <div className={`border-t border-gray-50 ${
-          isCombo ? 'flex flex-col items-start gap-2 pt-2' : 'flex items-center justify-between gap-3 pt-2'
+          isCombo ? 'flex items-center justify-between gap-2 pt-1.5 sm:flex-col sm:items-start sm:gap-2 sm:pt-2' : 'flex items-center justify-between gap-2 sm:gap-3 pt-1.5 sm:pt-2'
         }`}>
           
           <div className="flex flex-col shrink-0">
             {isCombo && (
-              <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">
+              <span className="text-[8px] sm:text-[9px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">
                 Valor do Pacote
               </span>
             )}
-            <span className="text-lg sm:text-xl font-black text-gray-950 tracking-tight leading-none">
+            <span className="text-sm sm:text-xl font-black text-gray-950 tracking-tight leading-none">
               R$ {marmita.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </span>
           </div>
@@ -151,24 +151,29 @@ export function MarmitaCard({ marmita, onMontarCombo }: MarmitaCardProps) {
               <button 
                 onClick={handleDiminuirQuantidade}
                 disabled={!itemNoCarrinho}
-                className="w-8 h-8 flex items-center justify-center bg-[#7cb151] text-white font-bold transition-colors hover:bg-[#59853a] disabled:cursor-not-allowed disabled:bg-[#7cb151]/60"
+                className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center bg-[#7cb151] text-white font-bold transition-colors hover:bg-[#59853a] disabled:cursor-not-allowed disabled:bg-[#7cb151]/60"
               >-</button>
-              <span className="font-bold text-gray-900 min-w-[30px] text-center text-sm">
+              <span className="font-bold text-gray-900 min-w-[26px] sm:min-w-[30px] text-center text-xs sm:text-sm">
                 {itemNoCarrinho?.quantidade ?? 0}
               </span>
               <button 
                 onClick={handleAumentarQuantidade}
-                className="w-8 h-8 flex items-center justify-center bg-[#7cb151] text-white font-bold transition-colors hover:bg-[#59853a]"
+                className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center bg-[#7cb151] text-white font-bold transition-colors hover:bg-[#59853a]"
               >+</button>
             </div>
           ) : (
             <button 
               onClick={handleAcaoBotao}
-              className={`bg-[#7cb151] hover:bg-[#59853a] text-white px-4 py-2.5 rounded-xl font-bold transition-all shadow-lg shadow-green-100 flex items-center justify-center gap-2 text-sm shrink-0 ${
-                isCombo ? 'w-full py-2.5 border-b-4 border-[#4d752d] active:border-b-0 active:translate-y-1' : ''
+              className={`bg-[#7cb151] hover:bg-[#59853a] text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl font-bold transition-all shadow-lg shadow-green-100 flex items-center justify-center gap-2 text-[10px] sm:text-sm shrink-0 ${
+                isCombo ? 'min-w-[82px] sm:w-full sm:py-2.5 border-b-4 border-[#4d752d] active:border-b-0 active:translate-y-1' : ''
               }`}
             >
-              {isCombo ? 'Montar meu Combo' : 'Adicionar'}
+              {isCombo ? (
+                <>
+                  <span className="sm:hidden">Montar</span>
+                  <span className="hidden sm:inline">Montar meu Combo</span>
+                </>
+              ) : 'Adicionar'}
             </button>
           )}
         </div>
