@@ -91,7 +91,7 @@ export function MarmitaCard({ marmita, onMontarCombo }: MarmitaCardProps) {
       )}
 
       {/* Imagem da Marmita */}
-      <div className="relative h-48 w-full shrink-0">
+      <div className="relative h-44 w-full shrink-0">
         <img 
           src={marmita.imagem} 
           alt={marmita.nome}
@@ -105,23 +105,24 @@ export function MarmitaCard({ marmita, onMontarCombo }: MarmitaCardProps) {
       </div>
 
       {/* Conteúdo do Card */}
-      <div className="p-5 flex-1 flex flex-col">
+      <div className="p-4 flex-1 flex flex-col">
         
-        {/* AJUSTE AQUI: Container com altura mínima rigorosa para mobile */}
-        <div className="min-h-[125px] md:min-h-0 flex flex-col w-full">
-          <h3 className="text-base font-bold text-gray-900 tracking-tight leading-snug line-clamp-2">
+        <div className="flex flex-col w-full">
+          <h3 className="text-[13px] font-bold text-gray-900 tracking-tight leading-snug break-words">
             {marmita.nome}
           </h3>
           
-          <p className="text-xs text-gray-500 font-normal mt-1 leading-relaxed line-clamp-3">
+          <p className="text-[11px] sm:text-xs text-gray-500 font-normal mt-1 leading-relaxed line-clamp-2">
             {marmita.descricao}
           </p>
+        </div>
 
+        <div className="mt-auto pt-2 mb-1 min-h-[16px]">
           {pratoNutricional && (
             <button
               type="button"
               onClick={() => setIsPinned(true)}
-              className="text-left text-xs font-medium text-green-600 hover:text-green-700 hover:underline mt-2 block transition-all"
+              className="text-left text-[11px] sm:text-xs font-medium text-green-600 hover:text-green-700 hover:underline block transition-all"
             >
               Ver info nutricional
             </button>
@@ -130,17 +131,17 @@ export function MarmitaCard({ marmita, onMontarCombo }: MarmitaCardProps) {
 
         {/* --- RODAPÉ DINÂMICO --- */}
         {/* mt-auto empurra este bloco para o fim da div p-5 */}
-        <div className={`mt-auto pt-4 border-t border-gray-50 ${
-          isCombo ? 'flex flex-col items-start gap-3' : 'flex items-center justify-between gap-3'
+        <div className={`border-t border-gray-50 ${
+          isCombo ? 'flex flex-col items-start gap-2 pt-2' : 'flex items-center justify-between gap-3 pt-2'
         }`}>
           
           <div className="flex flex-col shrink-0">
             {isCombo && (
-              <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">
+              <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">
                 Valor do Pacote
               </span>
             )}
-            <span className="text-xl font-black text-gray-950 tracking-tight leading-none">
+            <span className="text-lg sm:text-xl font-black text-gray-950 tracking-tight leading-none">
               R$ {marmita.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </span>
           </div>
@@ -164,7 +165,7 @@ export function MarmitaCard({ marmita, onMontarCombo }: MarmitaCardProps) {
             <button 
               onClick={handleAcaoBotao}
               className={`bg-[#7cb151] hover:bg-[#59853a] text-white px-4 py-2.5 rounded-xl font-bold transition-all shadow-lg shadow-green-100 flex items-center justify-center gap-2 text-sm shrink-0 ${
-                isCombo ? 'w-full py-3.5 border-b-4 border-[#4d752d] active:border-b-0 active:translate-y-1' : ''
+                isCombo ? 'w-full py-2.5 border-b-4 border-[#4d752d] active:border-b-0 active:translate-y-1' : ''
               }`}
             >
               {isCombo ? 'Montar meu Combo' : 'Adicionar'}
