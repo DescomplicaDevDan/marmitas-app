@@ -66,7 +66,10 @@ O vínculo entre marmita e tabela nutricional utiliza o `id` canônico do produt
 * Informação nutricional sob demanda, evitando poluição visual no card principal.
 * Busca local por prato, ingrediente, descrição e categoria para acelerar a descoberta no cardápio.
 * Layout horizontal compacto para cards em telas pequenas, preservando o layout em grid para tablet e desktop.
-* Modal de combos otimizado para mobile, com cards internos mais compactos, progresso visível e controles proporcionais.
+* Estado visual para itens já adicionados ao carrinho, reforçando confirmação e reduzindo dúvida do usuário.
+* Toast com fade-out e transparência para confirmar ações sem interromper a navegação.
+* Barra fixa mobile com total, quantidade de itens e acesso rápido ao pedido.
+* Modal de combos otimizado para mobile, com busca interna, cards compactos, progresso visual e controles proporcionais.
 
 ### Integridade de Dados
 
@@ -81,6 +84,7 @@ O vínculo entre marmita e tabela nutricional utiliza o `id` canônico do produt
 * Estado local com `useState` para interações pontuais de UI.
 * `useMemo` para derivar dados e evitar buscas desnecessárias em renderizações.
 * `useEffect` com cleanup para eventos globais, como fechamento da tabela ao clicar fora.
+* Temporizadores com cleanup para controlar feedbacks visuais temporários.
 * `useRef` para detecção de clique fora sem bibliotecas externas.
 
 ### Responsividade

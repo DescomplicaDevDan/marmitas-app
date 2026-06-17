@@ -8,9 +8,10 @@ import { TabelaNutricional } from './TabelaNutricional';
 interface MarmitaCardProps {
   marmita: Marmita;
   onMontarCombo: (marmita: Marmita) => void;
+  onFeedback?: (message: string) => void;
 }
 
-export function MarmitaCard({ marmita, onMontarCombo }: MarmitaCardProps) {
+export function MarmitaCard({ marmita, onMontarCombo, onFeedback }: MarmitaCardProps) {
   const { addToCart, cart, updateQuantity } = useCart();
   const [isPinned, setIsPinned] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -52,10 +53,12 @@ export function MarmitaCard({ marmita, onMontarCombo }: MarmitaCardProps) {
   const handleAumentarQuantidade = () => {
     if (itemNoCarrinho) {
       updateQuantity(marmita.id, 'increase');
+      onFeedback?.('Quantidade atualizada no pedido');
       return;
     }
 
     addToCart(marmita);
+    onFeedback?.('Marmita adicionada ao pedido');
   };
 
   const handleDiminuirQuantidade = () => {
@@ -103,8 +106,8 @@ export function MarmitaCard({ marmita, onMontarCombo }: MarmitaCardProps) {
           alt={marmita.nome}
           className="w-full h-full object-cover"
         />
-        <div className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-white/90 backdrop-blur-sm px-2.5 sm:px-3 py-1 rounded-full shadow-sm">
-          <span className="text-[9px] sm:text-[10px] font-bold text-[#59853a] uppercase tracking-wider">
+        <div className="absolute left-2 top-2 flex min-w-[54px] items-center justify-center rounded-full bg-white/85 px-2 py-1 shadow-sm ring-1 ring-white/50 backdrop-blur-md sm:left-3 sm:top-3 sm:min-w-0 sm:px-3">
+          <span className="text-center text-[8px] sm:text-[10px] font-black text-[#59853a] uppercase leading-none tracking-wide">
             {marmita.categoria}
           </span>
         </div>

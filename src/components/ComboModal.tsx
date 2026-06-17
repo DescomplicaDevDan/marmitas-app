@@ -12,6 +12,7 @@ interface Props {
 
 export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: Props) {
   const [categoriaSelecionada, setCategoriaSelecionada] = useState('Todos');
+  const [buscaCombo, setBuscaCombo] = useState('');
   const [escolhas, setEscolhas] = useState<EscolhaCombo[]>([]);
 
   const baseUnidades = parseInt(combo.nome.replace(/\D/g, '')) || 10;
@@ -29,10 +30,35 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
     new Set(marmitasDisponiveis.filter(m => m.categoria !== 'Combo').map(m => m.categoria))
   );
 
+  const progressoPercentual = Math.min((totalSelecionado / metaUnidades) * 100, 100);
+
   const marmitasParaExibir = marmitasDisponiveis.filter(m => {
     const naoECombo = m.categoria !== 'Combo';
     const matchesFiltro = categoriaSelecionada === 'Todos' ? true : m.categoria === categoriaSelecionada;
-    return naoECombo && matchesFiltro;
+    const termoNormalizado = buscaCombo
+      .trim()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+
+    if (!termoNormalizado) {
+      return naoECombo && matchesFiltro;
+    }
+
+    const textoBusca = [
+      m.nome,
+      m.descricao,
+      m.ingredientes,
+      m.categoria,
+      m.codigoPrato,
+    ]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+
+    return naoECombo && matchesFiltro && textoBusca.includes(termoNormalizado);
   });
 
   const handleUpdateQuantity = (marmita: Marmita, delta: number) => {
@@ -71,16 +97,46 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
             <button onClick={onClose} className="shrink-0 text-gray-400 hover:text-gray-600 font-bold uppercase text-[11px] sm:text-xs tracking-widest">Fechar</button>
           </div>
           
-          <div className="bg-[#f9fbf7] p-3 rounded-2xl border border-[#d1e7c5] flex justify-between items-center">
-            <span className="text-xs sm:text-sm font-bold text-[#59853a]">Progresso da seleção</span>
-            <span className={`text-base sm:text-lg font-black ${totalSelecionado === metaUnidades ? 'text-green-600' : 'text-amber-500'}`}>
-              {totalSelecionado} / {metaUnidades}
-            </span>
+          <div className="bg-[#f9fbf7] p-3 rounded-2xl border border-[#d1e7c5]">
+            <div className="mb-2 flex items-center justify-between gap-3">
+              <span className="text-xs sm:text-sm font-bold text-[#59853a]">
+                {totalSelecionado} de {metaUnidades} selecionadas
+              </span>
+              <span className={`text-xs sm:text-sm font-black ${totalSelecionado === metaUnidades ? 'text-green-600' : 'text-amber-500'}`}>
+                {totalSelecionado === metaUnidades ? 'Completo' : `Faltam ${metaUnidades - totalSelecionado}`}
+              </span>
+            </div>
+            <div className="h-2 overflow-hidden rounded-full bg-[#e9f5e1]">
+              <div
+                className="h-full rounded-full bg-[#7cb151] transition-all"
+                style={{ width: `${progressoPercentual}%` }}
+              />
+            </div>
           </div>
         </div>
 
         {/* Filtro de Categorias */}
         <div className="px-5 sm:px-6 py-3 bg-gray-50 border-b border-gray-100">
+          <div className="relative mb-3">
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#7cb151]"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.4"
+            >
+              <circle cx="11" cy="11" r="7" />
+              <path d="m16 16 4 4" />
+            </svg>
+            <input
+              type="search"
+              value={buscaCombo}
+              onChange={(event) => setBuscaCombo(event.target.value)}
+              placeholder="Buscar marmita no combo"
+              className="w-full rounded-2xl border border-gray-100 bg-white py-3 pl-11 pr-4 text-sm font-medium text-gray-700 outline-none transition-all placeholder:text-gray-400 focus:border-[#7cb151] focus:ring-4 focus:ring-[#7cb151]/10"
+            />
+          </div>
           <CategoryFilter 
             categories={categoriasFiltro}
             selectedCategory={categoriaSelecionada}
@@ -96,7 +152,9 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
               const qtdNoCombo = itemNaEscolha?.quantidade || 0;
               
               return (
-                <div key={marmita.id} className="flex items-center justify-between gap-3 p-3 rounded-2xl border border-gray-100 hover:border-[#7cb151]/30 transition-all bg-white shadow-sm">
+                <div key={marmita.id} className={`flex items-center justify-between gap-3 p-3 rounded-2xl border hover:border-[#7cb151]/30 transition-all shadow-sm ${
+                  qtdNoCombo > 0 ? 'border-[#7cb151] bg-[#f7fbf4] ring-1 ring-[#7cb151]/20' : 'border-gray-100 bg-white'
+                }`}>
                   <div className="flex min-w-0 items-center gap-3">
                     <div className="relative shrink-0">
                       <img src={marmita.imagem} className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover" alt={marmita.nome} />

@@ -16,6 +16,8 @@ export function Cardapio() {
   const [mostrarCheckout, setMostrarCheckout] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('Todos');
   const [searchTerm, setSearchTerm] = useState('');
+  const [feedbackMessage, setFeedbackMessage] = useState('');
+  const [isFeedbackVisible, setIsFeedbackVisible] = useState(false);
 
   const categorias = useMemo(() => {
     return Array.from(new Set(marmitas.map(m => m.categoria)));
@@ -68,6 +70,27 @@ export function Cardapio() {
     }
   }, [totalItems]);
 
+  useEffect(() => {
+    if (!feedbackMessage) {
+      return;
+    }
+
+    setIsFeedbackVisible(true);
+
+    const hideTimeoutId = window.setTimeout(() => {
+      setIsFeedbackVisible(false);
+    }, 1300);
+
+    const clearTimeoutId = window.setTimeout(() => {
+      setFeedbackMessage('');
+    }, 1650);
+
+    return () => {
+      window.clearTimeout(hideTimeoutId);
+      window.clearTimeout(clearTimeoutId);
+    };
+  }, [feedbackMessage]);
+
   const scrollToCart = () => {
     const isMobile = window.innerWidth < 1024;
     if (isMobile) {
@@ -81,6 +104,7 @@ export function Cardapio() {
   const handleConfirmarCombo = (escolhas: EscolhaCombo[]) => {
     if (comboSendoMontado) {
       addToCart(comboSendoMontado, escolhas); 
+      setFeedbackMessage('Combo adicionado ao pedido');
       setComboSendoMontado(null);
     }
   };
@@ -155,6 +179,7 @@ export function Cardapio() {
                   key={item.id} 
                   marmita={item} 
                   onMontarCombo={(m) => setComboSendoMontado(m)} 
+                  onFeedback={setFeedbackMessage}
                 />
               )) : (
                 <div className="sm:col-span-2 xl:col-span-3 rounded-2xl border border-dashed border-gray-200 bg-white p-8 text-center">
@@ -182,6 +207,17 @@ export function Cardapio() {
       </main>
 
       <Footer />
+
+      {feedbackMessage && (
+        <div className={`fixed inset-x-4 bottom-24 z-50 mx-auto flex max-w-md items-center gap-3 rounded-2xl border border-[#d1e7c5] bg-white/85 px-4 py-3 text-sm font-bold text-[#59853a] shadow-xl backdrop-blur-md transition-all duration-300 ease-out lg:bottom-8 ${
+          isFeedbackVisible ? 'translate-y-0 opacity-100' : 'translate-y-3 opacity-0'
+        }`}>
+          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#7cb151] text-xs font-black text-white">
+            ✓
+          </span>
+          <span>{feedbackMessage}</span>
+        </div>
+      )}
 
       {totalItems > 0 && (
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#d1e7c5] bg-white/95 px-4 py-3 shadow-[0_-12px_30px_rgba(15,23,42,0.12)] backdrop-blur-md lg:hidden">
