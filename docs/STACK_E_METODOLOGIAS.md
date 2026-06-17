@@ -24,7 +24,6 @@ Este documento resume as principais tecnologias, bibliotecas, padrões e decisõ
 | :--- | :--- |
 | `react` / `react-dom` | Base da aplicação front-end. |
 | `react-router-dom` | Controle de rotas e navegação. |
-| `lucide-react` | Base disponível para ícones escaláveis e consistentes. |
 | `typescript` | Checagem estática com configuração em modo estrito. |
 | `tailwindcss` | Design system utilitário e responsivo. |
 | `postcss` / `autoprefixer` | Processamento e compatibilidade de CSS. |
