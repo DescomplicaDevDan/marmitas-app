@@ -6,7 +6,7 @@ interface CategoryFilterProps {
 
 export function CategoryFilter({ categories, selectedCategory, onSelect }: CategoryFilterProps) {
   return (
-    <div className="flex gap-2 overflow-x-auto pb-4 scrollbar-hide">
+    <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-4 scrollbar-hide">
       <button
         onClick={() => onSelect('Todos')}
         className={`px-4 py-2 rounded-full text-sm font-bold transition-all whitespace-nowrap ${

@@ -5,7 +5,7 @@ export const marmitas: Marmita[] = [
   {
     id: '1',
     codigoPrato: "1.",
-    nome: "Almôndega de carne",
+    nome: "Macarrão com almôndega de carne",
     ingredientes: "Almôndega de carne com macarrão integral.",
     descricao: "Almôndega de carne com macarrão integral.",
     preco: 22.00,
@@ -15,7 +15,7 @@ export const marmitas: Marmita[] = [
   {
     id: '2',
     codigoPrato: "1.1",
-    nome: "Almôndega de frango",
+    nome: "Macarrão com almôndega de frango",
     ingredientes: "Almôndega de frago com macarrão integral.",
     descricao: "Almôndega de frago com macarrão integral.",
     preco: 22.00,
@@ -25,7 +25,7 @@ export const marmitas: Marmita[] = [
   {
     id: '3',
     codigoPrato: "2.",
-    nome: "Arroz 7 grãos com frango",
+    nome: "Frango desfiado com arroz 7 grãos e purê de mandioquinha",
     ingredientes: "Arroz 7 grãos com purê de mandioquinha e frango.",
     descricao: "Arroz 7 grãos com purê de mandioquinha e frango.",
     preco: 22.00,
@@ -35,7 +35,7 @@ export const marmitas: Marmita[] = [
   {
     id: '4',
     codigoPrato: "2.1",
-    nome: "Arroz 7 grãos com carne",
+    nome: "Carne desfiada com arroz 7 grãos e purê de mandioquinha",
     ingredientes: "Arroz 7 grãos com purê de mandioquinha e carne.",
     descricao: "Arroz 7 grãos com purê de mandioquinha e carne.",
     preco: 22.00,
@@ -45,7 +45,7 @@ export const marmitas: Marmita[] = [
   {
     id: '5',
     codigoPrato: "4.",
-    nome: "Burguer de patinho",
+    nome: "Burguer de patinho com purê de mandioquinha e arroz 7 grãos",
     ingredientes:"Burguer de patinho com arroz 7 grãos e legumes.",
     descricao: "Burguer de patinho com arroz 7 grãos e legumes.",
     preco: 22.00,
@@ -55,7 +55,7 @@ export const marmitas: Marmita[] = [
   {
     id: '6',
     codigoPrato: "4.1",
-    nome: "Burguer de frango",
+    nome: "Burguer de frango com purê de mandioquinha e arroz 7 grãos",
     ingredientes: "Burguer de frango com arroz 7 grãos e legumes.",
     descricao: "Burguer de frango com arroz 7 grãos e legumes.",
     preco: 22.00,
@@ -85,7 +85,7 @@ export const marmitas: Marmita[] = [
   {
     id: '9',
     codigoPrato: "8.",
-    nome: "Isca de carne",
+    nome: "Isca de carne de patinho com arroz 7 grãos e lentilha",
     ingredientes: "Isca de carne de patinho com Arroz 7 grãos e lentilha.",
     descricao: "Isca de carne de patinho com Arroz 7 grãos e lentilha.",
     preco: 22.00,
@@ -95,7 +95,7 @@ export const marmitas: Marmita[] = [
   {
     id: '10',
     codigoPrato: "8.1",
-    nome: "Isca de frango",
+    nome: "Isca de frango com arroz 7 grãos e lentilha",
     ingredientes: "Isca de frango com arroz 7 grãos e lentilha.",
     descricao: "Isca de frango com arroz 7 grãos e lentilha.",
     preco: 22.00,
@@ -115,7 +115,7 @@ export const marmitas: Marmita[] = [
   {
     id: '12',
     codigoPrato: "9.",
-    nome: "Escondidinho com Carne",
+    nome: "Escondidinho de batata doce com patinho",
     ingredientes: "Escondidinho de batata doce com carne de patinho e arroz 7 grãos.",
     descricao: "Escondidinho de batata doce com carne de patinho e arroz 7 grãos.",
     preco: 22.00,
@@ -125,7 +125,7 @@ export const marmitas: Marmita[] = [
   {
     id: '13',
     codigoPrato: "9.1",
-    nome: "Escondidinho com frango",
+    nome: "Escondidinho de batata doce com frango",
     ingredientes: "Escondidinho de batata doce com frango e arroz 7 grãos.",
     descricao: "Escondidinho de batata doce com frango e arroz 7 grãos.",
     preco: 22.00,
@@ -156,7 +156,7 @@ export const marmitas: Marmita[] = [
   {
     id: '16',
     codigoPrato: "12.",
-    nome: "Strogonoff de grão de bico",
+    nome: "Strogonoff de grão de bico com arroz 7 grãos e batata doce grelhada",
     ingredientes: "Strogonoff de grão de bico com arroz 7 grãos e batata doce grelhada.",
     descricao: "Strogonoff de grão de bico com arroz 7 grãos e batata doce grelhada.",
     preco: 22.00,
@@ -166,7 +166,7 @@ export const marmitas: Marmita[] = [
   {
     id: '17',
     codigoPrato: "13.",
-    nome: "Filé de peixe",
+    nome: "Filé de peixe com arroz 7 grãos e legumes",
     ingredientes: "Filé de peixe com arroz 7 grãos, cenoura, ervilha e brócolis.",
     descricao: "Filé de peixe com arroz 7 grãos, cenoura, ervilha e brócolis.",
     preco: 22.00,
@@ -176,7 +176,7 @@ export const marmitas: Marmita[] = [
   {
     id: '18',
     codigoPrato: "14.",
-    nome: "Frango desfiado",
+    nome: "Frango desfiado com arroz 7 grãos e legumes",
     ingredientes: "Frango desfiado com arroz 7 grãos e legumes.",
     descricao: "Frango desfiado com arroz 7 grãos e legumes.",
     preco: 22.00,
@@ -186,7 +186,7 @@ export const marmitas: Marmita[] = [
   {
     id: '19',
     codigoPrato: "14.1",
-    nome: "Carne desfiada",
+    nome: "Patinho desfiado com arroz 7 grãos e legumes",
     ingredientes: "carne de patinho desfiado com arroz 7 grãos e legumes.",
     descricao: "carne de patinho desfiado com arroz 7 grãos e legumes.",
     preco: 22.00,
@@ -196,7 +196,7 @@ export const marmitas: Marmita[] = [
   {
     id: '20',
     codigoPrato: "15.",
-    nome: "Frango em crosta",
+    nome: "Frango em crosta com purê de mandioquinha e brócolis",
     ingredientes: "Frango em crosta com purê de mandioquinha e brócolis.",
     descricao: "Frango em crosta com purê de mandioquinha e brócolis.",
     preco: 22.00,
@@ -206,7 +206,7 @@ export const marmitas: Marmita[] = [
   {
     id: '21',
     codigoPrato: "16.",
-    nome: "Panqueca integral com carne",
+    nome: "Panqueca integral com carne de patinho",
     ingredientes: "Panqueca integral com carne de patinho.",
     descricao: "Panqueca integral com carne de patinho.",
     preco: 22.00,
@@ -216,7 +216,7 @@ export const marmitas: Marmita[] = [
   {
     id: '22',
     codigoPrato: "16.1",
-    nome: "Panqueca integral com frango",
+    nome: "Panqueca integral com carne de frango",
     ingredientes: "Panqueca integral com frango.",
     descricao: "Panqueca integral com frango.",
     preco: 22.00,
@@ -226,7 +226,7 @@ export const marmitas: Marmita[] = [
   {
     id: '23',
     codigoPrato: "18.1",
-    nome: "Strogonoff de frango",
+    nome: "Strogonoff de frango com arroz 7 grãos e batata doce grelhada",
     ingredientes: "Strogonoff de frango com arroz 7 grão e batata doce grelhada.",
     descricao: "Strogonoff de frango com arroz 7 grão e batata doce grelhada.",
     preco: 22.00,
