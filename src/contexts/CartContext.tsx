@@ -14,12 +14,37 @@ interface CartContextData {
 const CartContext = createContext<CartContextData>({} as CartContextData);
 
 const STORAGE_KEY = '@Nutricomp:cart';
+const LEGACY_PRODUCT_IMAGE = '/combo-marmitas.png';
+const OPTIMIZED_PRODUCT_IMAGE = '/combo-marmitas.webp';
+
+function getInitialCart(): CartItem[] {
+  try {
+    const savedCart = localStorage.getItem(STORAGE_KEY);
+
+    if (!savedCart) {
+      return [];
+    }
+
+    const parsedCart = JSON.parse(savedCart);
+
+    if (!Array.isArray(parsedCart)) {
+      return [];
+    }
+
+    return parsedCart.map((item: CartItem) => ({
+      ...item,
+      imagem: item.imagem === LEGACY_PRODUCT_IMAGE
+        ? OPTIMIZED_PRODUCT_IMAGE
+        : item.imagem,
+    }));
+  } catch {
+    localStorage.removeItem(STORAGE_KEY);
+    return [];
+  }
+}
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [cart, setCart] = useState<CartItem[]>(() => {
-    const savedCart = localStorage.getItem(STORAGE_KEY);
-    return savedCart ? JSON.parse(savedCart) : [];
-  });
+  const [cart, setCart] = useState<CartItem[]>(getInitialCart);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));

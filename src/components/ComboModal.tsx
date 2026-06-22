@@ -162,6 +162,9 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
                         className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover"
                         alt={marmita.nome}
                         loading="lazy"
+                        decoding="async"
+                        width="64"
+                        height="64"
                       />
                       {qtdNoCombo > 0 && (
                         <div className="absolute -top-2 -right-2 bg-[#7cb151] text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold border-2 border-white">

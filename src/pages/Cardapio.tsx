@@ -1,14 +1,24 @@
-import { useState, useEffect, useMemo } from 'react';
+import { lazy, Suspense, useState, useEffect, useMemo } from 'react';
 import { MarmitaCard } from '../components/MarmitaCard';
 import { Cart } from '../components/Cart';
-import { CheckoutForm } from '../components/CheckoutForm';
 import { marmitas } from '../data/marmitas';
 import { useCart } from '../contexts/CartContext';
-import { ComboModal } from '../components/ComboModal';
 import { CategoryFilter } from '../components/CategoryFilter';
 import { Footer } from '../components/Footer'; 
 import { type Marmita, type EscolhaCombo } from '../types';
-import logo from '../assets/Logo.png';
+import logo from '../assets/Logo.webp';
+
+const CheckoutForm = lazy(() =>
+  import('../components/CheckoutForm').then((module) => ({
+    default: module.CheckoutForm,
+  })),
+);
+
+const ComboModal = lazy(() =>
+  import('../components/ComboModal').then((module) => ({
+    default: module.ComboModal,
+  })),
+);
 
 export function Cardapio() {
   const { totalItems, totalPrice, addToCart } = useCart();
@@ -124,7 +134,14 @@ export function Cardapio() {
       <header className="bg-white shadow-sm pt-6 pb-2 mb-8 sticky top-0 z-50 border-b border-gray-100 w-full">
         <div className="max-w-7xl mx-auto px-4 relative flex items-center justify-center">
           <div className="flex flex-col items-center justify-center transition-all duration-300">
-            <img src={logo} alt="Nutricomp" className="h-20 lg:h-36 w-auto object-contain" />
+            <img
+              src={logo}
+              alt="Nutricomp"
+              width="420"
+              height="345"
+              fetchPriority="high"
+              className="h-20 w-auto object-contain lg:h-36"
+            />
           </div>
           
           <div className="absolute right-4 top-1/2 -translate-y-1/2">
@@ -185,12 +202,13 @@ export function Cardapio() {
         <div className="flex flex-col lg:flex-row gap-8 items-start w-full">
           <div className="flex-1 w-full min-w-0">
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 items-stretch">
-              {marmitasFiltradas.length > 0 ? marmitasFiltradas.map((item) => (
+              {marmitasFiltradas.length > 0 ? marmitasFiltradas.map((item, index) => (
                 <MarmitaCard 
                   key={item.id} 
                   marmita={item} 
                   onMontarCombo={(m) => setComboSendoMontado(m)} 
                   onFeedback={setFeedbackMessage}
+                  priority={index < 3}
                 />
               )) : (
                 <div className="ui-empty-state sm:col-span-2 xl:col-span-3">
@@ -242,7 +260,9 @@ export function Cardapio() {
             <Cart onFinalizar={handleFinalizar} checkoutAberto={mostrarCheckout} />
             {mostrarCheckout && (
               <div id="checkout-section" className="w-full max-w-full animate-in fade-in slide-in-from-top-4 duration-500">
-                <CheckoutForm />
+                <Suspense fallback={<div className="ui-card h-40 animate-pulse bg-gray-100" />}>
+                  <CheckoutForm />
+                </Suspense>
               </div>
             )}
           </aside>
@@ -286,12 +306,14 @@ export function Cardapio() {
       )}
 
       {comboSendoMontado && (
-        <ComboModal 
-          combo={comboSendoMontado}
-          marmitasDisponiveis={marmitas}
-          onClose={() => setComboSendoMontado(null)}
-          onConfirm={handleConfirmarCombo}
-        />
+        <Suspense fallback={null}>
+          <ComboModal
+            combo={comboSendoMontado}
+            marmitasDisponiveis={marmitas}
+            onClose={() => setComboSendoMontado(null)}
+            onConfirm={handleConfirmarCombo}
+          />
+        </Suspense>
       )}
     </div>
   );
