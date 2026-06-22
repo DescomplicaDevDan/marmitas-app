@@ -201,7 +201,7 @@ export function Cardapio() {
 
         <div className="flex flex-col lg:flex-row gap-8 items-start w-full">
           <div className="flex-1 w-full min-w-0">
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 items-stretch">
+            <div className="grid grid-cols-1 items-start gap-6 sm:grid-cols-2 sm:items-stretch xl:grid-cols-3">
               {marmitasFiltradas.length > 0 ? marmitasFiltradas.map((item, index) => (
                 <MarmitaCard 
                   key={item.id} 

@@ -74,7 +74,7 @@ export function MarmitaCard({
   };
 
   return (
-    <div ref={cardRef} className={`font-sans shadow-sm border overflow-hidden hover:shadow-md transition-all h-full relative flex flex-row sm:flex-col gap-2 sm:gap-0 rounded-2xl p-2 sm:p-0 ${
+    <div ref={cardRef} className={`font-sans shadow-sm border overflow-hidden hover:shadow-md transition-all relative flex flex-row self-start sm:h-full sm:self-stretch sm:flex-col gap-2 sm:gap-0 rounded-2xl p-2 sm:p-0 ${
       isNoCarrinho ? 'bg-[#f7fbf4] border-[#7cb151] ring-1 ring-[#7cb151]/25' : 'bg-white'
     } ${
       isCombo && !isNoCarrinho ? 'border-[#7cb151] ring-1 ring-[#7cb151]/20' : ''
@@ -117,7 +117,7 @@ export function MarmitaCard({
           height="640"
           className="w-full h-full object-cover"
         />
-        <div className="absolute left-2 top-2 flex min-w-[54px] items-center justify-center rounded-full bg-white/85 px-2 py-1 shadow-sm ring-1 ring-white/50 backdrop-blur-md sm:left-3 sm:top-3 sm:min-w-0 sm:px-3">
+        <div className="absolute left-2 top-2 flex min-w-[54px] items-center justify-center rounded-full bg-white/95 px-2 py-1 shadow-sm ring-1 ring-white/50 sm:left-3 sm:top-3 sm:min-w-0 sm:bg-white/85 sm:px-3 sm:backdrop-blur-md">
           <span className="text-center text-[8px] sm:text-[10px] font-black text-[#59853a] uppercase leading-none tracking-wide">
             {marmita.categoria}
           </span>
