@@ -30,15 +30,13 @@ export function TabelaNutricional({
   isPinned,
   onClose,
 }: TabelaNutricionalProps) {
-  if (!prato) {
+  if (!prato || !isVisible) {
     return null;
   }
 
   return (
     <div
-      className={`fixed inset-x-4 top-20 z-50 my-auto flex max-h-[calc(100vh-7rem)] flex-col rounded-2xl border border-gray-100 bg-white/95 p-4 shadow-2xl backdrop-blur-md transition-none sm:absolute sm:inset-0 sm:z-30 sm:max-h-none sm:rounded-none sm:border-0 sm:shadow-none ${
-        isVisible ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-      }`}
+      className="fixed inset-x-4 top-20 z-50 my-auto flex max-h-[calc(100vh-7rem)] flex-col rounded-2xl border border-gray-100 bg-white p-4 shadow-2xl sm:absolute sm:inset-0 sm:z-30 sm:max-h-none sm:rounded-none sm:border-0 sm:bg-white/95 sm:shadow-none sm:backdrop-blur-md"
     >
       <div className="mb-3 flex items-start justify-between gap-3">
         <div className="min-w-0">
