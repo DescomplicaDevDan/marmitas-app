@@ -60,6 +60,9 @@ export function Cart({ onFinalizar, checkoutAberto }: CartProps) {
                 src={item.imagem}
                 alt={item.nome}
                 loading="lazy"
+                decoding="async"
+                width="56"
+                height="56"
                 className="h-14 w-14 shrink-0 rounded-2xl object-cover"
               />
               <div className="min-w-0 flex-1">

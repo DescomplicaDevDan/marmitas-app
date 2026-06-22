@@ -9,9 +9,15 @@ interface MarmitaCardProps {
   marmita: Marmita;
   onMontarCombo: (marmita: Marmita) => void;
   onFeedback?: (message: string) => void;
+  priority?: boolean;
 }
 
-export function MarmitaCard({ marmita, onMontarCombo, onFeedback }: MarmitaCardProps) {
+export function MarmitaCard({
+  marmita,
+  onMontarCombo,
+  onFeedback,
+  priority = false,
+}: MarmitaCardProps) {
   const { addToCart, cart, updateQuantity } = useCart();
   const [isPinned, setIsPinned] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -104,7 +110,11 @@ export function MarmitaCard({ marmita, onMontarCombo, onFeedback }: MarmitaCardP
         <img 
           src={marmita.imagem} 
           alt={marmita.nome}
-          loading="lazy"
+          loading={priority ? 'eager' : 'lazy'}
+          decoding="async"
+          fetchPriority={priority ? 'high' : 'auto'}
+          width="640"
+          height="640"
           className="w-full h-full object-cover"
         />
         <div className="absolute left-2 top-2 flex min-w-[54px] items-center justify-center rounded-full bg-white/85 px-2 py-1 shadow-sm ring-1 ring-white/50 backdrop-blur-md sm:left-3 sm:top-3 sm:min-w-0 sm:px-3">
