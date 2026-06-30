@@ -67,6 +67,11 @@ export function Cart({ onFinalizar, checkoutAberto }: CartProps) {
               />
               <div className="min-w-0 flex-1">
                 <h4 className="line-clamp-2 text-sm font-bold leading-snug text-gray-900">{item.nome}</h4>
+                {item.tamanho && (
+                  <span className="mt-1 inline-flex rounded-full bg-[#e9f5e1] px-2 py-0.5 text-[10px] font-black uppercase tracking-wide text-[#59853a]">
+                    {item.tamanho}
+                  </span>
+                )}
                 <p className="mt-1 text-sm font-black text-[#59853a]">
                   {(item.preco * item.quantidade).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                 </p>

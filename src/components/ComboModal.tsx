@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import { type Marmita, type EscolhaCombo } from '../types';
+import { type Marmita, type EscolhaCombo, type TamanhoMarmita } from '../types';
 import { CategoryFilter } from './CategoryFilter';
 import { ENABLE_PROGRESSIVE_BONUS } from './Cart';
+import { getOpcoesTamanho } from '../utils/tamanhos';
 
 interface Props {
   combo: Marmita;
   marmitasDisponiveis: Marmita[];
-  onConfirm: (escolhas: EscolhaCombo[]) => void;
+  onConfirm: (escolhas: EscolhaCombo[], tamanho: TamanhoMarmita) => void;
   onClose: () => void;
 }
 
@@ -14,6 +15,7 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
   const [categoriaSelecionada, setCategoriaSelecionada] = useState('Todos');
   const [buscaCombo, setBuscaCombo] = useState('');
   const [escolhas, setEscolhas] = useState<EscolhaCombo[]>([]);
+  const [tamanhoSelecionado, setTamanhoSelecionado] = useState<TamanhoMarmita | null>(null);
 
   const baseUnidades = parseInt(combo.nome.replace(/\D/g, '')) || 10;
 
@@ -31,6 +33,7 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
   );
 
   const progressoPercentual = Math.min((totalSelecionado / metaUnidades) * 100, 100);
+  const opcoesTamanho = getOpcoesTamanho(combo);
 
   const marmitasParaExibir = marmitasDisponiveis.filter(m => {
     const naoECombo = m.categoria !== 'Combo';
@@ -98,6 +101,35 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
           </div>
           
           <div className="bg-[#f9fbf7] p-3 rounded-2xl border border-[#d1e7c5]">
+            <div className="mb-3">
+              <p className="mb-2 text-[10px] font-black uppercase tracking-widest text-gray-400">
+                Escolha a gramagem
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                {opcoesTamanho.map((opcao) => {
+                  const isSelected = tamanhoSelecionado === opcao.tamanho;
+
+                  return (
+                    <button
+                      key={opcao.tamanho}
+                      type="button"
+                      onClick={() => setTamanhoSelecionado(opcao.tamanho)}
+                      className={`rounded-xl border px-3 py-2 text-left transition-all ${
+                        isSelected
+                          ? 'border-[#7cb151] bg-white text-[#59853a] ring-2 ring-[#7cb151]/20'
+                          : 'border-gray-100 bg-white/70 text-gray-500 hover:border-[#d1e7c5]'
+                      }`}
+                    >
+                      <span className="block text-sm font-black">{opcao.tamanho}</span>
+                      <span className="block text-xs font-bold">
+                        {opcao.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
             <div className="mb-2 flex items-center justify-between gap-3">
               <span className="text-xs sm:text-sm font-bold text-[#59853a]">
                 {totalSelecionado} de {metaUnidades} selecionadas
@@ -231,15 +263,21 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
         <div className="p-4 sm:p-6 border-t border-gray-100 bg-gray-50">
           <button
             type="button"
-            disabled={totalSelecionado !== metaUnidades}
-            onClick={() => onConfirm(escolhas)}
+            disabled={totalSelecionado !== metaUnidades || !tamanhoSelecionado}
+            onClick={() => {
+              if (tamanhoSelecionado) {
+                onConfirm(escolhas, tamanhoSelecionado);
+              }
+            }}
             className={`w-full py-3.5 sm:py-4 rounded-2xl font-black text-sm sm:text-lg transition-all shadow-lg ${
-              totalSelecionado === metaUnidades 
+              totalSelecionado === metaUnidades && tamanhoSelecionado
               ? 'bg-[#7cb151] text-white shadow-green-100 hover:scale-[1.02]' 
               : 'bg-gray-200 text-gray-400 cursor-not-allowed uppercase tracking-widest'
             }`}
           >
-            {totalSelecionado === metaUnidades 
+            {!tamanhoSelecionado
+              ? 'Escolha 300g ou 450g'
+              : totalSelecionado === metaUnidades 
               ? 'Finalizar Seleção' 
               : `Faltam selecionar ${metaUnidades - totalSelecionado} marmitas`}
           </button>

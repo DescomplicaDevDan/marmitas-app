@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { type Marmita } from '../types';
+import { type Marmita, type TamanhoMarmita } from '../types';
 import { useCart } from '../contexts/CartContext';
 import { ENABLE_PROGRESSIVE_BONUS } from './Cart';
 import { listaNutricional } from '../data/nutricao';
 import { TabelaNutricional } from './TabelaNutricional';
+import { getOpcoesTamanho } from '../utils/tamanhos';
 
 interface MarmitaCardProps {
   marmita: Marmita;
@@ -20,10 +21,17 @@ export function MarmitaCard({
 }: MarmitaCardProps) {
   const { addToCart, cart, updateQuantity } = useCart();
   const [isPinned, setIsPinned] = useState(false);
+  const [tamanhoSelecionado, setTamanhoSelecionado] = useState<TamanhoMarmita | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  const itemNoCarrinho = cart.find((item) => item.id === marmita.id);
   const isCombo = marmita.categoria === 'Combo';
+  const opcoesTamanho = useMemo(() => getOpcoesTamanho(marmita), [marmita]);
+  const opcaoSelecionada = tamanhoSelecionado
+    ? opcoesTamanho.find((opcao) => opcao.tamanho === tamanhoSelecionado)
+    : null;
+  const itemNoCarrinho = tamanhoSelecionado
+    ? cart.find((item) => item.produtoId === marmita.id && item.tamanho === tamanhoSelecionado)
+    : undefined;
   const comboNoCarrinho = isCombo && cart.some((item) => item.categoria === 'Combo' && item.nome === marmita.nome);
   const isNoCarrinho = Boolean(itemNoCarrinho || comboNoCarrinho);
   const pratoNutricional = useMemo(() => {
@@ -51,25 +59,28 @@ export function MarmitaCard({
   const handleAcaoBotao = () => {
     if (isCombo) {
       onMontarCombo(marmita);
-    } else {
-      addToCart(marmita);
     }
   };
 
   const handleAumentarQuantidade = () => {
+    if (!tamanhoSelecionado) {
+      onFeedback?.('Escolha 300g ou 450g antes de adicionar');
+      return;
+    }
+
     if (itemNoCarrinho) {
-      updateQuantity(marmita.id, 'increase');
+      updateQuantity(itemNoCarrinho.id, 'increase');
       onFeedback?.('Quantidade atualizada no pedido');
       return;
     }
 
-    addToCart(marmita);
+    addToCart(marmita, undefined, tamanhoSelecionado);
     onFeedback?.('Marmita adicionada ao pedido');
   };
 
   const handleDiminuirQuantidade = () => {
     if (itemNoCarrinho) {
-      updateQuantity(marmita.id, 'decrease');
+      updateQuantity(itemNoCarrinho.id, 'decrease');
     }
   };
 
@@ -167,24 +178,47 @@ export function MarmitaCard({
               </span>
             )}
             <span className="text-sm sm:text-xl font-black text-gray-950 tracking-tight leading-none">
-              R$ {marmita.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              R$ {(opcaoSelecionada?.preco ?? marmita.preco).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </span>
           </div>
 
           {!isCombo ? (
-            <div className="flex items-center overflow-hidden rounded-xl border border-[#d1e7c5] bg-white shadow-sm shrink-0">
-              <button 
-                onClick={handleDiminuirQuantidade}
-                disabled={!itemNoCarrinho}
-                className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center bg-[#7cb151] text-white font-bold transition-colors hover:bg-[#59853a] disabled:cursor-not-allowed disabled:bg-[#7cb151]/60"
-              >-</button>
-              <span className="font-bold text-gray-900 min-w-[26px] sm:min-w-[30px] text-center text-xs sm:text-sm">
-                {itemNoCarrinho?.quantidade ?? 0}
-              </span>
-              <button 
-                onClick={handleAumentarQuantidade}
-                className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center bg-[#7cb151] text-white font-bold transition-colors hover:bg-[#59853a]"
-              >+</button>
+            <div className="flex shrink-0 flex-col items-end gap-1.5 sm:gap-2">
+              <div className="grid grid-cols-2 gap-1 rounded-xl bg-gray-50 p-1">
+                {opcoesTamanho.map((opcao) => {
+                  const isSelected = tamanhoSelecionado === opcao.tamanho;
+
+                  return (
+                    <button
+                      key={opcao.tamanho}
+                      type="button"
+                      onClick={() => setTamanhoSelecionado(opcao.tamanho)}
+                      className={`rounded-lg px-2 py-1 text-[9px] font-black transition-all sm:text-[10px] ${
+                        isSelected
+                          ? 'bg-[#7cb151] text-white shadow-sm'
+                          : 'text-gray-500 hover:bg-white hover:text-[#59853a]'
+                      }`}
+                    >
+                      {opcao.tamanho}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="flex items-center overflow-hidden rounded-xl border border-[#d1e7c5] bg-white shadow-sm">
+                <button 
+                  onClick={handleDiminuirQuantidade}
+                  disabled={!itemNoCarrinho}
+                  className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center bg-[#7cb151] text-white font-bold transition-colors hover:bg-[#59853a] disabled:cursor-not-allowed disabled:bg-[#7cb151]/60"
+                >-</button>
+                <span className="font-bold text-gray-900 min-w-[26px] sm:min-w-[30px] text-center text-xs sm:text-sm">
+                  {itemNoCarrinho?.quantidade ?? 0}
+                </span>
+                <button 
+                  onClick={handleAumentarQuantidade}
+                  className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center bg-[#7cb151] text-white font-bold transition-colors hover:bg-[#59853a]"
+                >+</button>
+              </div>
             </div>
           ) : (
             <button 
