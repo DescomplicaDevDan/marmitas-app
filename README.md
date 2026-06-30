@@ -6,11 +6,20 @@ Sistema escalável de cardápio digital e automação de logística para marmita
 
 ---
 
+## Valor Entregue
+
+* **Mais conversão no mobile:** Cardápio compacto, seleção rápida de gramagem e controles de quantidade alinhados para reduzir fricção na compra.
+* **Menos erro operacional:** Pedido final enviado pelo WhatsApp com separação entre combos, avulsas, códigos dos pratos, quantidades e gramagem escolhida.
+* **Manutenção previsível:** Preços, gramagens, carrinho, checkout e validações foram organizados em contratos TypeScript e utilitários centralizados.
+* **Experiência profissional:** Interface responsiva, feedbacks visuais, estado persistente do carrinho e documentação técnica pronta para evolução do produto.
+
+---
+
 ## Destaques de Engenharia
 
 * **Logística Automatizada & Triagem de Cozinha:** Integração robusta via WhatsApp com payload segmentado e estruturado. O sistema separa automaticamente **Combos Montados** de **Marmitas Avulsas**, otimizando a esteira de produção da cozinha sem o uso de caracteres especiais ou emojis que quebram leitores de dados.
 * **Sanitização com Regex:** Filtros em tempo real para CPF (11 dígitos limitados), CEP e Telefone, garantindo integridade total dos dados antes do envio.
-* **Performance & UX:** Interface *Mobile-First*, persistência de estado do carrinho com *LocalStorage* (evitando perda de dados em reloads), busca local por prato/ingrediente, cards compactos, feedbacks visuais e harmonia de grid com `items-stretch`.
+* **Performance & UX:** Interface *Mobile-First*, persistência de estado do carrinho com *LocalStorage* (evitando perda de dados em reloads), busca local por prato/ingrediente, cards compactos, controles centralizados, feedbacks visuais e harmonia de grid com `items-stretch`.
 * **Integridade Nutricional:** Tabelas nutricionais vinculadas pelo `id` canônico do produto, evitando associação incorreta entre pratos visualmente parecidos ou códigos legados.
 * **Gramagem Obrigatória:** Seleção explícita de 300g ou 450g para marmitas avulsas e combos, com preço próprio por tamanho, itens separados no carrinho e gramagem enviada no pedido final.
 * **Arquitetura Profissional:** Tipagem estrita com TypeScript, componentização limpa e gestão de estado global centralizada via Context API (`CartContext`).
@@ -35,7 +44,7 @@ Sistema escalável de cardápio digital e automação de logística para marmita
 * **Bônus Progressivo Acumulativo:** Algoritmo dinâmico que escaneia o carrinho e calcula automaticamente o direito a marmitas de brinde de acordo com o volume de combos selecionados (10, 20 ou 30 unidades), emitindo um alerta destacado de `ATENÇÃO COZINHA`.
 * **Checkout Inteligente:** Coleta de dados fiscais (CPF), validação de máscara de endereço com foco na cidade de São Paulo e suporte a observações personalizadas que preservam a caixa do texto digitado pelo usuário.
 * **Busca Inteligente no Cardápio:** Pesquisa local por nome, descrição, ingredientes e categoria, com normalização de acentos para melhorar descoberta de pratos.
-* **Cards de Produto Otimizados:** Layout compacto com hierarquia tipográfica clara, seletor obrigatório de gramagem, seletor de quantidade alinhado ao preço, variação horizontal para telas pequenas e estado visual para itens no carrinho.
+* **Cards de Produto Otimizados:** Layout compacto com hierarquia tipográfica clara, seletor obrigatório de gramagem, tabela nutricional integrada à linha de decisão, seletor de quantidade alinhado ao preço, variação horizontal para telas pequenas e estado visual para itens no carrinho.
 * **Feedback de Interação:** Toast discreto com transparência e fade-out para confirmar adição ou atualização de itens sem interromper o fluxo de compra.
 * **Resumo Fixo Mobile:** Barra inferior com quantidade de itens, total do pedido e ação rápida para acessar o carrinho em telas pequenas.
 * **Fluxo de Combo Aprimorado:** Modal com seleção obrigatória de gramagem, busca interna, barra de progresso, contagem de itens selecionados e destaque visual para marmitas já escolhidas.
@@ -49,7 +58,7 @@ Sistema escalável de cardápio digital e automação de logística para marmita
 
 | Componente | Responsabilidade |
 | :--- | :--- |
-| `MarmitaCard` | Renderiza o card do produto, preço por gramagem, seletor de quantidade, link nutricional e comportamento de clique fora. |
+| `MarmitaCard` | Renderiza o card do produto, preço por gramagem, seletor de quantidade centralizado, link nutricional e comportamento de clique fora. |
 | `TabelaNutricional` | Exibe os dados nutricionais do prato em overlay com scroll interno e layout adaptável ao nome completo do produto. |
 | `ComboModal` | Gerencia a montagem de combos com gramagem obrigatória, busca interna, seleção de marmitas, progresso e controles de quantidade. |
 | `CategoryFilter` | Controla a navegação por categorias com chips responsivos e rolagem horizontal no mobile. |

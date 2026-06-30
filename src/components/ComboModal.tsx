@@ -242,20 +242,31 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
                   <div className="flex shrink-0 items-center overflow-hidden rounded-xl border border-gray-100 bg-gray-50 shadow-sm">
                     <button 
                       type="button"
+                      aria-label="Diminuir quantidade"
                       onClick={() => handleUpdateQuantity(marmita, -1)}
-                      className="w-8 h-8 flex items-center justify-center bg-white font-bold text-gray-400 hover:text-red-500 transition-colors"
-                    >-</button>
+                      className="flex h-8 w-8 items-center justify-center bg-white text-gray-400 transition-colors hover:text-red-500"
+                    >
+                      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+                        <path d="M5 12h14" />
+                      </svg>
+                    </button>
                     <span className="font-bold text-gray-800 w-8 text-center text-sm">{qtdNoCombo}</span>
                     <button 
                       type="button"
+                      aria-label="Aumentar quantidade"
                       onClick={() => handleUpdateQuantity(marmita, 1)}
                       disabled={totalSelecionado >= metaUnidades}
-                      className={`w-8 h-8 flex items-center justify-center font-bold transition-all ${
+                      className={`flex h-8 w-8 items-center justify-center transition-all ${
                         totalSelecionado >= metaUnidades 
                         ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
                         : 'bg-[#7cb151] text-white hover:bg-[#59853a]'
                       }`}
-                    >+</button>
+                    >
+                      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+                        <path d="M12 5v14" />
+                        <path d="M5 12h14" />
+                      </svg>
+                    </button>
                   </div>
                 </div>
               );
