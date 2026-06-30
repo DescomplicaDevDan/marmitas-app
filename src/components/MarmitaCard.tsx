@@ -23,6 +23,8 @@ export function MarmitaCard({
   const [isPinned, setIsPinned] = useState(false);
   const [tamanhoSelecionado, setTamanhoSelecionado] = useState<TamanhoMarmita | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
+  const seletorTamanhoRef = useRef<HTMLDivElement>(null);
+  const controleQuantidadeRef = useRef<HTMLDivElement>(null);
 
   const isCombo = marmita.categoria === 'Combo';
   const opcoesTamanho = useMemo(() => getOpcoesTamanho(marmita), [marmita]);
@@ -55,6 +57,28 @@ export function MarmitaCard({
       document.removeEventListener('mousedown', handleClickFora);
     };
   }, [isPinned]);
+
+  useEffect(() => {
+    if (!tamanhoSelecionado) {
+      return;
+    }
+
+    const handleClickForaGramagem = (event: MouseEvent) => {
+      const alvo = event.target as Node;
+
+      if (seletorTamanhoRef.current?.contains(alvo) || controleQuantidadeRef.current?.contains(alvo)) {
+        return;
+      }
+
+      setTamanhoSelecionado(null);
+    };
+
+    document.addEventListener('mousedown', handleClickForaGramagem);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickForaGramagem);
+    };
+  }, [tamanhoSelecionado]);
 
   const handleAcaoBotao = () => {
     if (isCombo) {
@@ -184,7 +208,7 @@ export function MarmitaCard({
 
           {!isCombo ? (
             <div className="flex shrink-0 flex-col items-end gap-1.5 sm:gap-2">
-              <div className="grid grid-cols-2 gap-1 rounded-xl bg-gray-50 p-1">
+              <div ref={seletorTamanhoRef} className="grid grid-cols-2 gap-1 rounded-xl bg-gray-50 p-1">
                 {opcoesTamanho.map((opcao) => {
                   const isSelected = tamanhoSelecionado === opcao.tamanho;
 
@@ -205,7 +229,7 @@ export function MarmitaCard({
                 })}
               </div>
 
-              <div className="flex items-center overflow-hidden rounded-xl border border-[#d1e7c5] bg-white shadow-sm">
+              <div ref={controleQuantidadeRef} className="flex items-center overflow-hidden rounded-xl border border-[#d1e7c5] bg-white shadow-sm">
                 <button 
                   onClick={handleDiminuirQuantidade}
                   disabled={!itemNoCarrinho}

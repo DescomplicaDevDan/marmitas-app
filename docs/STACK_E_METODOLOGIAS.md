@@ -15,6 +15,7 @@ Este documento resume as principais tecnologias, bibliotecas, padrões e decisõ
 | React Router | Estrutura de navegação da aplicação. |
 | Context API | Gerenciamento global do carrinho e compartilhamento de estado entre componentes. |
 | LocalStorage | Persistência do carrinho para evitar perda de dados em reloads. |
+| Scripts NPM | Padronização de validação com `quality`, `typecheck`, `build`, `dev` e `preview`. |
 
 ---
 
@@ -53,19 +54,21 @@ A aplicação foi organizada em componentes com responsabilidades claras:
 
 | Componente | Responsabilidade |
 | :--- | :--- |
-| `MarmitaCard` | Card de produto, preço, controle de quantidade, link nutricional e interação de clique fora. |
+| `MarmitaCard` | Card de produto, preço por gramagem, controle de quantidade, link nutricional e interação de clique fora. |
 | `TabelaNutricional` | Overlay de informações nutricionais com scroll interno e layout adaptável. |
 | `Cart` | Exibição e edição dos itens do carrinho. |
-| `ComboModal` | Fluxo de montagem de combos com escolhas controladas. |
+| `ComboModal` | Fluxo de montagem de combos com gramagem obrigatória e escolhas controladas. |
 | `CheckoutForm` | Coleta e validação de dados do pedido. |
 | `CategoryFilter` | Filtro de categorias para navegação no cardápio. |
-| `CartContext` | Estado global, atualização de quantidades e persistência do carrinho. |
+| `CartContext` | Estado global, separação de itens por gramagem, atualização de quantidades e persistência do carrinho. |
 
 ### Separação de Dados e UI
 
 Os dados de produtos e dados nutricionais ficam em arquivos dedicados dentro de `src/data`, reduzindo acoplamento entre interface e conteúdo.
 
 O vínculo entre marmita e tabela nutricional utiliza o `id` canônico do produto, evitando associação incorreta por nomes parecidos, códigos legados ou variações textuais.
+
+As regras de gramagem e preço ficam centralizadas em `src/utils/tamanhos.ts`, evitando duplicação entre cardápio, combos, carrinho e checkout.
 
 ---
 
@@ -77,6 +80,8 @@ O vínculo entre marmita e tabela nutricional utiliza o `id` canônico do produt
 * Hierarquia visual clara: imagem, título, descrição, informação nutricional, preço e ação.
 * Preço posicionado no rodapé para melhorar escaneabilidade em grid.
 * Controle de quantidade direto no card, reduzindo fricção no fluxo de compra.
+* Seleção explícita de 300g ou 450g antes de adicionar marmitas avulsas ou fechar combos.
+* Deseleção automática da gramagem ao clicar fora do seletor, reduzindo escolha acidental.
 * Informação nutricional sob demanda, evitando poluição visual no card principal.
 * Busca local por prato, ingrediente, descrição e categoria para acelerar a descoberta no cardápio.
 * Layout horizontal compacto para cards em telas pequenas, preservando o layout em grid para tablet e desktop.
@@ -95,6 +100,8 @@ O vínculo entre marmita e tabela nutricional utiliza o `id` canônico do produt
 * Remoção de registros nutricionais sem produto correspondente.
 * Padronização dos títulos dos produtos com os nomes completos da tabela nutricional.
 * Prevenção de falso vínculo entre pratos com nomes ou composições parecidas.
+* Carrinho separa o mesmo prato por gramagem, evitando soma incorreta entre 300g e 450g.
+* Checkout envia a gramagem escolhida em marmitas avulsas e combos montados.
 
 ### React e TypeScript
 
@@ -104,6 +111,7 @@ O vínculo entre marmita e tabela nutricional utiliza o `id` canônico do produt
 * `useEffect` com cleanup para eventos globais, como fechamento da tabela ao clicar fora.
 * Temporizadores com cleanup para controlar feedbacks visuais temporários.
 * `useRef` para detecção de clique fora sem bibliotecas externas.
+* Utilitário centralizado para cálculo de opções de tamanho e preços por gramagem.
 
 ### Responsividade
 
@@ -119,6 +127,7 @@ O vínculo entre marmita e tabela nutricional utiliza o `id` canônico do produt
 * Sanitização de campos com Regex para dados como CPF, telefone e CEP.
 * Montagem de payload estruturado para envio via WhatsApp.
 * Separação entre combos montados e marmitas avulsas para facilitar operação de cozinha.
+* Inclusão da gramagem no payload de cozinha para reduzir erro operacional na finalização.
 * Persistência do carrinho para preservar intenção de compra.
 
 ---
@@ -128,10 +137,12 @@ O vínculo entre marmita e tabela nutricional utiliza o `id` canônico do produt
 Comandos utilizados para validação local:
 
 ```bash
-npx tsc -p tsconfig.app.json
+npm run quality
+npm run typecheck
+npm run build
 ```
 
-O projeto utiliza TypeScript em modo estrito para reforçar contratos de dados e reduzir regressões durante refatorações.
+O projeto utiliza TypeScript em modo estrito para reforçar contratos de dados e reduzir regressões durante refatorações. O script `quality` valida regras de preço/gramagem, separação de carrinho por tamanho, ausência de dependências de produção desnecessárias e manutenção de lazy loading em fluxos mais pesados. O build de produção via Vite também serve como checagem de desempenho, exibindo o tamanho final dos bundles.
 
 ---
 

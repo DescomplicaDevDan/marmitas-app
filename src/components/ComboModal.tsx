@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { type Marmita, type EscolhaCombo, type TamanhoMarmita } from '../types';
 import { CategoryFilter } from './CategoryFilter';
 import { ENABLE_PROGRESSIVE_BONUS } from './Cart';
@@ -16,6 +16,8 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
   const [buscaCombo, setBuscaCombo] = useState('');
   const [escolhas, setEscolhas] = useState<EscolhaCombo[]>([]);
   const [tamanhoSelecionado, setTamanhoSelecionado] = useState<TamanhoMarmita | null>(null);
+  const seletorTamanhoRef = useRef<HTMLDivElement>(null);
+  const botaoConfirmarRef = useRef<HTMLButtonElement>(null);
 
   const baseUnidades = parseInt(combo.nome.replace(/\D/g, '')) || 10;
 
@@ -34,6 +36,28 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
 
   const progressoPercentual = Math.min((totalSelecionado / metaUnidades) * 100, 100);
   const opcoesTamanho = getOpcoesTamanho(combo);
+
+  useEffect(() => {
+    if (!tamanhoSelecionado) {
+      return;
+    }
+
+    const handleClickForaGramagem = (event: MouseEvent) => {
+      const alvo = event.target as Node;
+
+      if (seletorTamanhoRef.current?.contains(alvo) || botaoConfirmarRef.current?.contains(alvo)) {
+        return;
+      }
+
+      setTamanhoSelecionado(null);
+    };
+
+    document.addEventListener('mousedown', handleClickForaGramagem);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickForaGramagem);
+    };
+  }, [tamanhoSelecionado]);
 
   const marmitasParaExibir = marmitasDisponiveis.filter(m => {
     const naoECombo = m.categoria !== 'Combo';
@@ -105,7 +129,7 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
               <p className="mb-2 text-[10px] font-black uppercase tracking-widest text-gray-400">
                 Escolha a gramagem
               </p>
-              <div className="grid grid-cols-2 gap-2">
+              <div ref={seletorTamanhoRef} className="grid grid-cols-2 gap-2">
                 {opcoesTamanho.map((opcao) => {
                   const isSelected = tamanhoSelecionado === opcao.tamanho;
 
@@ -262,6 +286,7 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
         {/* Rodapé com Botão de Ação */}
         <div className="p-4 sm:p-6 border-t border-gray-100 bg-gray-50">
           <button
+            ref={botaoConfirmarRef}
             type="button"
             disabled={totalSelecionado !== metaUnidades || !tamanhoSelecionado}
             onClick={() => {
