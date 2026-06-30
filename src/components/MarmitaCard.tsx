@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { type Marmita } from '../types';
+import { type Marmita, type TamanhoMarmita } from '../types';
 import { useCart } from '../contexts/CartContext';
 import { ENABLE_PROGRESSIVE_BONUS } from './Cart';
 import { listaNutricional } from '../data/nutricao';
 import { TabelaNutricional } from './TabelaNutricional';
+import { getOpcoesTamanho } from '../utils/tamanhos';
 
 interface MarmitaCardProps {
   marmita: Marmita;
@@ -20,10 +21,20 @@ export function MarmitaCard({
 }: MarmitaCardProps) {
   const { addToCart, cart, updateQuantity } = useCart();
   const [isPinned, setIsPinned] = useState(false);
+  const [tamanhoSelecionado, setTamanhoSelecionado] = useState<TamanhoMarmita | null>(null);
+  const [tabelaDesktopSide, setTabelaDesktopSide] = useState<'left' | 'right'>('right');
   const cardRef = useRef<HTMLDivElement>(null);
+  const seletorTamanhoRef = useRef<HTMLDivElement>(null);
+  const controleQuantidadeRef = useRef<HTMLDivElement>(null);
 
-  const itemNoCarrinho = cart.find((item) => item.id === marmita.id);
   const isCombo = marmita.categoria === 'Combo';
+  const opcoesTamanho = useMemo(() => getOpcoesTamanho(marmita), [marmita]);
+  const opcaoSelecionada = tamanhoSelecionado
+    ? opcoesTamanho.find((opcao) => opcao.tamanho === tamanhoSelecionado)
+    : null;
+  const itemNoCarrinho = tamanhoSelecionado
+    ? cart.find((item) => item.produtoId === marmita.id && item.tamanho === tamanhoSelecionado)
+    : undefined;
   const comboNoCarrinho = isCombo && cart.some((item) => item.categoria === 'Combo' && item.nome === marmita.nome);
   const isNoCarrinho = Boolean(itemNoCarrinho || comboNoCarrinho);
   const pratoNutricional = useMemo(() => {
@@ -48,47 +59,87 @@ export function MarmitaCard({
     };
   }, [isPinned]);
 
+  useEffect(() => {
+    if (!tamanhoSelecionado) {
+      return;
+    }
+
+    const handleClickForaGramagem = (event: MouseEvent) => {
+      const alvo = event.target as Node;
+
+      if (seletorTamanhoRef.current?.contains(alvo) || controleQuantidadeRef.current?.contains(alvo)) {
+        return;
+      }
+
+      setTamanhoSelecionado(null);
+    };
+
+    document.addEventListener('mousedown', handleClickForaGramagem);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickForaGramagem);
+    };
+  }, [tamanhoSelecionado]);
+
   const handleAcaoBotao = () => {
     if (isCombo) {
       onMontarCombo(marmita);
-    } else {
-      addToCart(marmita);
     }
   };
 
   const handleAumentarQuantidade = () => {
+    if (!tamanhoSelecionado) {
+      onFeedback?.('Escolha 300g ou 450g antes de adicionar');
+      return;
+    }
+
     if (itemNoCarrinho) {
-      updateQuantity(marmita.id, 'increase');
+      updateQuantity(itemNoCarrinho.id, 'increase');
       onFeedback?.('Quantidade atualizada no pedido');
       return;
     }
 
-    addToCart(marmita);
+    addToCart(marmita, undefined, tamanhoSelecionado);
     onFeedback?.('Marmita adicionada ao pedido');
   };
 
   const handleDiminuirQuantidade = () => {
     if (itemNoCarrinho) {
-      updateQuantity(marmita.id, 'decrease');
+      updateQuantity(itemNoCarrinho.id, 'decrease');
     }
   };
 
+  const handleAbrirTabelaNutricional = () => {
+    const cardRect = cardRef.current?.getBoundingClientRect();
+
+    if (cardRect) {
+      const larguraTabelaDesktop = 420;
+      const espacoDisponivelDireita = window.innerWidth - cardRect.right;
+      setTabelaDesktopSide(espacoDisponivelDireita >= larguraTabelaDesktop ? 'right' : 'left');
+    }
+
+    setIsPinned(true);
+  };
+
   return (
-    <div ref={cardRef} className={`font-sans shadow-sm border overflow-hidden hover:shadow-md transition-all relative flex flex-row self-start sm:h-full sm:self-stretch sm:flex-col gap-2 sm:gap-0 rounded-2xl p-2 sm:p-0 ${
-      isNoCarrinho ? 'bg-[#f7fbf4] border-[#7cb151] ring-1 ring-[#7cb151]/25' : 'bg-white'
-    } ${
-      isCombo && !isNoCarrinho ? 'border-[#7cb151] ring-1 ring-[#7cb151]/20' : ''
-    } ${
-      !isCombo && !isNoCarrinho ? 'border-gray-100' : ''
-    }`}>
+    <div ref={cardRef} className="relative self-start font-sans sm:h-full sm:self-stretch">
       <TabelaNutricional
         prato={pratoNutricional}
         isVisible={Boolean(pratoNutricional && isPinned)}
         isPinned={isPinned}
+        desktopSide={tabelaDesktopSide}
         onClose={() => {
           setIsPinned(false);
         }}
       />
+
+      <div className={`shadow-sm border overflow-hidden hover:shadow-md transition-all flex flex-row sm:h-full sm:flex-col gap-2 sm:gap-0 rounded-2xl p-2 sm:p-0 ${
+        isNoCarrinho ? 'bg-[#f7fbf4] border-[#7cb151] ring-1 ring-[#7cb151]/25' : 'bg-white'
+      } ${
+        isCombo && !isNoCarrinho ? 'border-[#7cb151] ring-1 ring-[#7cb151]/20' : ''
+      } ${
+        !isCombo && !isNoCarrinho ? 'border-gray-100' : ''
+      }`}>
 
       
       {/* Selo Amarelo "GANHE" */}
@@ -106,7 +157,7 @@ export function MarmitaCard({
       )}
 
       {/* Imagem da Marmita */}
-      <div className="relative h-[104px] w-[104px] shrink-0 overflow-hidden rounded-xl sm:h-44 sm:w-full sm:rounded-none">
+      <div className="relative min-h-[104px] w-[104px] self-stretch shrink-0 overflow-hidden rounded-xl sm:h-44 sm:min-h-0 sm:w-full sm:self-auto sm:rounded-none">
         <img 
           src={marmita.imagem} 
           alt={marmita.nome}
@@ -125,7 +176,7 @@ export function MarmitaCard({
       </div>
 
       {/* Conteúdo do Card */}
-      <div className="min-w-0 flex-1 flex flex-col py-1 pr-1 sm:p-4">
+      <div className="min-w-0 flex-1 flex flex-col py-0.5 pr-1 sm:p-4">
         
         <div className="flex flex-col w-full">
           {isNoCarrinho && (
@@ -142,51 +193,90 @@ export function MarmitaCard({
           </p>
         </div>
 
-        <div className="mt-auto pt-1 sm:pt-2 mb-0.5 sm:mb-1 min-h-[13px] sm:min-h-[16px]">
-          {pratoNutricional && (
-            <button
-              type="button"
-              onClick={() => setIsPinned(true)}
-              className="text-left text-[9px] sm:text-xs font-medium text-green-600 hover:text-green-700 hover:underline block transition-all"
-            >
-              Ver info nutricional
-            </button>
-          )}
-        </div>
+        {!isCombo ? (
+          <div className="mt-auto pt-1 sm:pt-2">
+            <div className="mb-1 flex items-center justify-between gap-2 sm:mb-1.5">
+              <div className="min-w-0 flex-1">
+                {pratoNutricional && (
+                  <button
+                    type="button"
+                    onClick={handleAbrirTabelaNutricional}
+                    className="block truncate text-left text-[9px] font-medium text-green-600 transition-all hover:text-green-700 hover:underline sm:text-xs"
+                  >
+                    Ver info nutricional
+                  </button>
+                )}
+              </div>
 
-        {/* --- RODAPÉ DINÂMICO --- */}
-        {/* mt-auto empurra este bloco para o fim da div p-5 */}
-        <div className={`border-t border-gray-50 ${
-          isCombo ? 'flex items-center justify-between gap-2 pt-1.5 sm:flex-col sm:items-start sm:gap-2 sm:pt-2' : 'flex items-center justify-between gap-2 sm:gap-3 pt-1.5 sm:pt-2'
-        }`}>
-          
-          <div className="flex flex-col shrink-0">
-            {isCombo && (
-              <span className="text-[8px] sm:text-[9px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">
+              <div ref={seletorTamanhoRef} className="grid w-[82px] shrink-0 grid-cols-2 gap-1 rounded-xl bg-gray-50 p-1 sm:w-[92px]">
+                {opcoesTamanho.map((opcao) => {
+                  const isSelected = tamanhoSelecionado === opcao.tamanho;
+
+                  return (
+                    <button
+                      key={opcao.tamanho}
+                      type="button"
+                      onClick={() => setTamanhoSelecionado(opcao.tamanho)}
+                      className={`rounded-lg px-1.5 py-1 text-[9px] font-black transition-all sm:px-2.5 sm:text-[10px] ${
+                        isSelected
+                          ? 'bg-[#7cb151] text-white shadow-sm'
+                          : 'text-gray-500 hover:bg-white hover:text-[#59853a]'
+                      }`}
+                    >
+                      {opcao.tamanho}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between gap-2 border-gray-50 sm:border-t sm:pt-2">
+              <div className="flex shrink-0 flex-col">
+                <span className="text-sm font-black leading-none tracking-tight text-gray-950 sm:text-xl">
+                  R$ {(opcaoSelecionada?.preco ?? marmita.preco).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                </span>
+              </div>
+
+              <div ref={controleQuantidadeRef} className="flex w-[82px] shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[#d1e7c5] bg-white shadow-sm sm:w-[92px]">
+                <button
+                  type="button"
+                  aria-label="Diminuir quantidade"
+                  onClick={handleDiminuirQuantidade}
+                  disabled={!itemNoCarrinho}
+                  className="flex h-6 w-6 items-center justify-center bg-[#7cb151] text-white transition-colors hover:bg-[#59853a] disabled:cursor-not-allowed disabled:bg-[#7cb151]/60 sm:h-8 sm:w-8"
+                >
+                  <svg aria-hidden="true" viewBox="0 0 24 24" className="h-3 w-3 sm:h-3.5 sm:w-3.5" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+                    <path d="M5 12h14" />
+                  </svg>
+                </button>
+                <span className="min-w-0 flex-1 text-center text-xs font-bold text-gray-900 sm:text-sm">
+                  {itemNoCarrinho?.quantidade ?? 0}
+                </span>
+                <button
+                  type="button"
+                  aria-label="Aumentar quantidade"
+                  onClick={handleAumentarQuantidade}
+                  className="flex h-6 w-6 items-center justify-center bg-[#7cb151] text-white transition-colors hover:bg-[#59853a] sm:h-8 sm:w-8"
+                >
+                  <svg aria-hidden="true" viewBox="0 0 24 24" className="h-3 w-3 sm:h-3.5 sm:w-3.5" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+                    <path d="M12 5v14" />
+                    <path d="M5 12h14" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="mt-auto flex items-center justify-between gap-2 border-t border-gray-50 pt-1.5 sm:flex-col sm:items-start sm:gap-2 sm:pt-2">
+            <div className="flex shrink-0 flex-col">
+              <span className="mb-0.5 text-[8px] font-bold uppercase tracking-wider text-gray-400 sm:text-[9px]">
                 Valor do Pacote
               </span>
-            )}
-            <span className="text-sm sm:text-xl font-black text-gray-950 tracking-tight leading-none">
-              R$ {marmita.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-            </span>
-          </div>
-
-          {!isCombo ? (
-            <div className="flex items-center overflow-hidden rounded-xl border border-[#d1e7c5] bg-white shadow-sm shrink-0">
-              <button 
-                onClick={handleDiminuirQuantidade}
-                disabled={!itemNoCarrinho}
-                className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center bg-[#7cb151] text-white font-bold transition-colors hover:bg-[#59853a] disabled:cursor-not-allowed disabled:bg-[#7cb151]/60"
-              >-</button>
-              <span className="font-bold text-gray-900 min-w-[26px] sm:min-w-[30px] text-center text-xs sm:text-sm">
-                {itemNoCarrinho?.quantidade ?? 0}
+              <span className="text-sm font-black leading-none tracking-tight text-gray-950 sm:text-xl">
+                R$ {marmita.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
               </span>
-              <button 
-                onClick={handleAumentarQuantidade}
-                className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center bg-[#7cb151] text-white font-bold transition-colors hover:bg-[#59853a]"
-              >+</button>
             </div>
-          ) : (
+
             <button 
               onClick={handleAcaoBotao}
               className={`bg-[#7cb151] hover:bg-[#59853a] text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl font-bold transition-all shadow-lg shadow-green-100 flex items-center justify-center gap-2 text-[10px] sm:text-sm shrink-0 ${
@@ -200,8 +290,9 @@ export function MarmitaCard({
                 </>
               ) : 'Adicionar'}
             </button>
-          )}
-        </div>
+          </div>
+        )}
+      </div>
       </div>
     </div>
   );

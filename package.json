@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "typecheck": "tsc --noEmit",
+    "quality": "npm run typecheck && node scripts/quality-check.mjs",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },

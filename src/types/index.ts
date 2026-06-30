@@ -1,3 +1,10 @@
+export type TamanhoMarmita = '300g' | '450g';
+
+export interface OpcaoTamanho {
+  tamanho: TamanhoMarmita;
+  preco: number;
+}
+
 export interface Marmita {
   id: string;
   codigoPrato?: string;
@@ -10,10 +17,13 @@ export interface Marmita {
   brinde?: string;
   categoria: 'Carne' | 'Frango' | 'Peixe' | 'Suíno' | 'Vegetariana' | 'Combo'; 
   escolhas?: EscolhaCombo[];
+  opcoesTamanho?: OpcaoTamanho[];
 }
 
 export interface CartItem extends Marmita {
   quantidade: number;
+  produtoId?: string;
+  tamanho?: TamanhoMarmita;
 }
 
 export interface CheckoutFormData {
@@ -38,7 +48,7 @@ export interface EscolhaCombo {
 
 export interface CartContextData {
   items: CartItem[];
-  addToCart: (marmita: Marmita) => void;
+  addToCart: (marmita: Marmita, escolhas?: EscolhaCombo[], tamanho?: TamanhoMarmita) => void;
   updateQuantity: (id: string, type: 'increase' | 'decrease') => void;
   totalItems: number;
 }

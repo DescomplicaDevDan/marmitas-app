@@ -44,7 +44,7 @@ export function CheckoutForm() {
     if (combos.length > 0) {
       textoItensCozinha += `--- COMBOS MONTADOS ---\n\n`;
       textoItensCozinha += combos.map((item: CartItem) => {
-        let textoCombo = `[COMBO] ${item.nome} (QTD: ${item.quantidade})\n`;
+        let textoCombo = `[COMBO] ${item.nome}${item.tamanho ? ` (${item.tamanho})` : ''} (QTD: ${item.quantidade})\n`;
         textoCombo += `Composição:\n`;
         const escolhas = item.escolhas?.map((esc: EscolhaCombo) => 
           `  > ${esc.quantidade}x [${esc.codigoPrato || 'S/C'}] ${esc.nome}`
@@ -57,7 +57,7 @@ export function CheckoutForm() {
     if (avulsas.length > 0) {
       textoItensCozinha += `--- MARMITAS AVULSAS ---\n\n`;
       textoItensCozinha += avulsas.map((item: CartItem) => 
-        `  > ${item.quantidade}x [${item.codigoPrato || 'S/C'}] ${item.nome}`
+        `  > ${item.quantidade}x [${item.codigoPrato || 'S/C'}] ${item.nome}${item.tamanho ? ` (${item.tamanho})` : ''}`
       ).join('\n') + '\n';
     }
 

@@ -1,9 +1,10 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import { type Marmita, type CartItem, type EscolhaCombo } from '../types';
+import { type Marmita, type CartItem, type EscolhaCombo, type TamanhoMarmita } from '../types';
+import { getOpcaoTamanho, TAMANHO_PADRAO } from '../utils/tamanhos';
 
 interface CartContextData {
   cart: CartItem[];
-  addToCart: (marmita: Marmita, escolhas?: EscolhaCombo[]) => void;
+  addToCart: (marmita: Marmita, escolhas?: EscolhaCombo[], tamanho?: TamanhoMarmita) => void;
   updateQuantity: (id: string, action: 'increase' | 'decrease') => void;
   removeFromCart: (id: string) => void;
   clearCart: () => void;
@@ -31,12 +32,38 @@ function getInitialCart(): CartItem[] {
       return [];
     }
 
-    return parsedCart.map((item: CartItem) => ({
-      ...item,
-      imagem: item.imagem === LEGACY_PRODUCT_IMAGE
+    return parsedCart.map((item: CartItem) => {
+      const imagem = item.imagem === LEGACY_PRODUCT_IMAGE
         ? OPTIMIZED_PRODUCT_IMAGE
-        : item.imagem,
-    }));
+        : item.imagem;
+
+      if (item.categoria === 'Combo') {
+        const produtoId = item.produtoId ?? String(item.id).split('-')[0];
+        const tamanho = item.tamanho ?? TAMANHO_PADRAO;
+        const opcaoTamanho = getOpcaoTamanho({ ...item, id: produtoId, imagem }, tamanho);
+
+        return {
+          ...item,
+          produtoId,
+          tamanho,
+          preco: opcaoTamanho.preco,
+          imagem,
+        };
+      }
+
+      const produtoId = item.produtoId ?? String(item.id).split('-')[0];
+      const tamanho = item.tamanho ?? TAMANHO_PADRAO;
+      const opcaoTamanho = getOpcaoTamanho({ ...item, id: produtoId, imagem }, tamanho);
+
+      return {
+        ...item,
+        id: `${produtoId}-${tamanho}`,
+        produtoId,
+        tamanho,
+        preco: opcaoTamanho.preco,
+        imagem,
+      };
+    });
   } catch {
     localStorage.removeItem(STORAGE_KEY);
     return [];
@@ -50,24 +77,48 @@ export function CartProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
   }, [cart]);
 
-  function addToCart(marmita: Marmita, escolhas?: EscolhaCombo[]) {
+  function addToCart(marmita: Marmita, escolhas?: EscolhaCombo[], tamanho?: TamanhoMarmita) {
     setCart(prevCart => {
       const isCombo = marmita.categoria === 'Combo';
 
       if (!isCombo) {
-        const itemExists = prevCart.find(item => item.id === marmita.id);
+        if (!tamanho) {
+          return prevCart;
+        }
+
+        const opcaoTamanho = getOpcaoTamanho(marmita, tamanho);
+        const itemId = `${marmita.id}-${tamanho}`;
+        const itemExists = prevCart.find(item => item.id === itemId);
+
         if (itemExists) {
           return prevCart.map(item =>
-            item.id === marmita.id ? { ...item, quantidade: item.quantidade + 1 } : item
+            item.id === itemId ? { ...item, quantidade: item.quantidade + 1 } : item
           );
         }
+
+        return [...prevCart, {
+          ...marmita,
+          id: itemId,
+          produtoId: marmita.id,
+          tamanho,
+          preco: opcaoTamanho.preco,
+          quantidade: 1,
+        }];
       }
 
-      const novoId = isCombo ? `${marmita.id}-${Date.now()}` : marmita.id;
+      if (!tamanho) {
+        return prevCart;
+      }
+
+      const opcaoTamanho = getOpcaoTamanho(marmita, tamanho);
+      const novoId = `${marmita.id}-${tamanho}-${Date.now()}`;
 
       return [...prevCart, { 
         ...marmita, 
         id: String(novoId), 
+        produtoId: marmita.id,
+        tamanho,
+        preco: opcaoTamanho.preco,
         quantidade: 1, 
         escolhas: escolhas 
       }];

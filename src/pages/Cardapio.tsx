@@ -5,7 +5,7 @@ import { marmitas } from '../data/marmitas';
 import { useCart } from '../contexts/CartContext';
 import { CategoryFilter } from '../components/CategoryFilter';
 import { Footer } from '../components/Footer'; 
-import { type Marmita, type EscolhaCombo } from '../types';
+import { type Marmita, type EscolhaCombo, type TamanhoMarmita } from '../types';
 import logo from '../assets/Logo.webp';
 
 const CheckoutForm = lazy(() =>
@@ -111,9 +111,9 @@ export function Cardapio() {
     }
   };
 
-  const handleConfirmarCombo = (escolhas: EscolhaCombo[]) => {
+  const handleConfirmarCombo = (escolhas: EscolhaCombo[], tamanho: TamanhoMarmita) => {
     if (comboSendoMontado) {
-      addToCart(comboSendoMontado, escolhas); 
+      addToCart(comboSendoMontado, escolhas, tamanho); 
       setFeedbackMessage('Combo adicionado ao pedido');
       setComboSendoMontado(null);
     }

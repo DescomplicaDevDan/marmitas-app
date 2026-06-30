@@ -1,12 +1,13 @@
-import { useState } from 'react';
-import { type Marmita, type EscolhaCombo } from '../types';
+import { useEffect, useRef, useState } from 'react';
+import { type Marmita, type EscolhaCombo, type TamanhoMarmita } from '../types';
 import { CategoryFilter } from './CategoryFilter';
 import { ENABLE_PROGRESSIVE_BONUS } from './Cart';
+import { getOpcoesTamanho } from '../utils/tamanhos';
 
 interface Props {
   combo: Marmita;
   marmitasDisponiveis: Marmita[];
-  onConfirm: (escolhas: EscolhaCombo[]) => void;
+  onConfirm: (escolhas: EscolhaCombo[], tamanho: TamanhoMarmita) => void;
   onClose: () => void;
 }
 
@@ -14,6 +15,9 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
   const [categoriaSelecionada, setCategoriaSelecionada] = useState('Todos');
   const [buscaCombo, setBuscaCombo] = useState('');
   const [escolhas, setEscolhas] = useState<EscolhaCombo[]>([]);
+  const [tamanhoSelecionado, setTamanhoSelecionado] = useState<TamanhoMarmita | null>(null);
+  const seletorTamanhoRef = useRef<HTMLDivElement>(null);
+  const botaoConfirmarRef = useRef<HTMLButtonElement>(null);
 
   const baseUnidades = parseInt(combo.nome.replace(/\D/g, '')) || 10;
 
@@ -31,6 +35,29 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
   );
 
   const progressoPercentual = Math.min((totalSelecionado / metaUnidades) * 100, 100);
+  const opcoesTamanho = getOpcoesTamanho(combo);
+
+  useEffect(() => {
+    if (!tamanhoSelecionado) {
+      return;
+    }
+
+    const handleClickForaGramagem = (event: MouseEvent) => {
+      const alvo = event.target as Node;
+
+      if (seletorTamanhoRef.current?.contains(alvo) || botaoConfirmarRef.current?.contains(alvo)) {
+        return;
+      }
+
+      setTamanhoSelecionado(null);
+    };
+
+    document.addEventListener('mousedown', handleClickForaGramagem);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickForaGramagem);
+    };
+  }, [tamanhoSelecionado]);
 
   const marmitasParaExibir = marmitasDisponiveis.filter(m => {
     const naoECombo = m.categoria !== 'Combo';
@@ -98,6 +125,35 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
           </div>
           
           <div className="bg-[#f9fbf7] p-3 rounded-2xl border border-[#d1e7c5]">
+            <div className="mb-3">
+              <p className="mb-2 text-[10px] font-black uppercase tracking-widest text-gray-400">
+                Escolha a gramagem
+              </p>
+              <div ref={seletorTamanhoRef} className="grid grid-cols-2 gap-2">
+                {opcoesTamanho.map((opcao) => {
+                  const isSelected = tamanhoSelecionado === opcao.tamanho;
+
+                  return (
+                    <button
+                      key={opcao.tamanho}
+                      type="button"
+                      onClick={() => setTamanhoSelecionado(opcao.tamanho)}
+                      className={`rounded-xl border px-3 py-2 text-left transition-all ${
+                        isSelected
+                          ? 'border-[#7cb151] bg-white text-[#59853a] ring-2 ring-[#7cb151]/20'
+                          : 'border-gray-100 bg-white/70 text-gray-500 hover:border-[#d1e7c5]'
+                      }`}
+                    >
+                      <span className="block text-sm font-black">{opcao.tamanho}</span>
+                      <span className="block text-xs font-bold">
+                        {opcao.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
             <div className="mb-2 flex items-center justify-between gap-3">
               <span className="text-xs sm:text-sm font-bold text-[#59853a]">
                 {totalSelecionado} de {metaUnidades} selecionadas
@@ -186,20 +242,31 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
                   <div className="flex shrink-0 items-center overflow-hidden rounded-xl border border-gray-100 bg-gray-50 shadow-sm">
                     <button 
                       type="button"
+                      aria-label="Diminuir quantidade"
                       onClick={() => handleUpdateQuantity(marmita, -1)}
-                      className="w-8 h-8 flex items-center justify-center bg-white font-bold text-gray-400 hover:text-red-500 transition-colors"
-                    >-</button>
+                      className="flex h-8 w-8 items-center justify-center bg-white text-gray-400 transition-colors hover:text-red-500"
+                    >
+                      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+                        <path d="M5 12h14" />
+                      </svg>
+                    </button>
                     <span className="font-bold text-gray-800 w-8 text-center text-sm">{qtdNoCombo}</span>
                     <button 
                       type="button"
+                      aria-label="Aumentar quantidade"
                       onClick={() => handleUpdateQuantity(marmita, 1)}
                       disabled={totalSelecionado >= metaUnidades}
-                      className={`w-8 h-8 flex items-center justify-center font-bold transition-all ${
+                      className={`flex h-8 w-8 items-center justify-center transition-all ${
                         totalSelecionado >= metaUnidades 
                         ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
                         : 'bg-[#7cb151] text-white hover:bg-[#59853a]'
                       }`}
-                    >+</button>
+                    >
+                      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+                        <path d="M12 5v14" />
+                        <path d="M5 12h14" />
+                      </svg>
+                    </button>
                   </div>
                 </div>
               );
@@ -230,16 +297,23 @@ export function ComboModal({ combo, marmitasDisponiveis, onConfirm, onClose }: P
         {/* Rodapé com Botão de Ação */}
         <div className="p-4 sm:p-6 border-t border-gray-100 bg-gray-50">
           <button
+            ref={botaoConfirmarRef}
             type="button"
-            disabled={totalSelecionado !== metaUnidades}
-            onClick={() => onConfirm(escolhas)}
+            disabled={totalSelecionado !== metaUnidades || !tamanhoSelecionado}
+            onClick={() => {
+              if (tamanhoSelecionado) {
+                onConfirm(escolhas, tamanhoSelecionado);
+              }
+            }}
             className={`w-full py-3.5 sm:py-4 rounded-2xl font-black text-sm sm:text-lg transition-all shadow-lg ${
-              totalSelecionado === metaUnidades 
+              totalSelecionado === metaUnidades && tamanhoSelecionado
               ? 'bg-[#7cb151] text-white shadow-green-100 hover:scale-[1.02]' 
               : 'bg-gray-200 text-gray-400 cursor-not-allowed uppercase tracking-widest'
             }`}
           >
-            {totalSelecionado === metaUnidades 
+            {!tamanhoSelecionado
+              ? 'Escolha 300g ou 450g'
+              : totalSelecionado === metaUnidades 
               ? 'Finalizar Seleção' 
               : `Faltam selecionar ${metaUnidades - totalSelecionado} marmitas`}
           </button>

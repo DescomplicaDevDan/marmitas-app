@@ -67,6 +67,11 @@ export function Cart({ onFinalizar, checkoutAberto }: CartProps) {
               />
               <div className="min-w-0 flex-1">
                 <h4 className="line-clamp-2 text-sm font-bold leading-snug text-gray-900">{item.nome}</h4>
+                {item.tamanho && (
+                  <span className="mt-1 inline-flex rounded-full bg-[#e9f5e1] px-2 py-0.5 text-[10px] font-black uppercase tracking-wide text-[#59853a]">
+                    {item.tamanho}
+                  </span>
+                )}
                 <p className="mt-1 text-sm font-black text-[#59853a]">
                   {(item.preco * item.quantidade).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                 </p>
@@ -74,14 +79,27 @@ export function Cart({ onFinalizar, checkoutAberto }: CartProps) {
               
               <div className="flex shrink-0 items-center overflow-hidden rounded-xl border border-[#d1e7c5] bg-white shadow-sm">
                 <button 
+                  type="button"
+                  aria-label="Diminuir quantidade"
                   onClick={() => updateQuantity(item.id, 'decrease')}
-                  className="flex h-8 w-8 items-center justify-center bg-[#7cb151] font-bold text-white transition-colors hover:bg-[#59853a]"
-                >-</button>
+                  className="flex h-8 w-8 items-center justify-center bg-[#7cb151] text-white transition-colors hover:bg-[#59853a]"
+                >
+                  <svg aria-hidden="true" viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+                    <path d="M5 12h14" />
+                  </svg>
+                </button>
                 <span className="w-8 text-center text-sm font-bold text-gray-900">{item.quantidade}</span>
                 <button 
+                  type="button"
+                  aria-label="Aumentar quantidade"
                   onClick={() => updateQuantity(item.id, 'increase')}
-                  className="flex h-8 w-8 items-center justify-center bg-[#7cb151] font-bold text-white transition-colors hover:bg-[#59853a]"
-                >+</button>
+                  className="flex h-8 w-8 items-center justify-center bg-[#7cb151] text-white transition-colors hover:bg-[#59853a]"
+                >
+                  <svg aria-hidden="true" viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+                    <path d="M12 5v14" />
+                    <path d="M5 12h14" />
+                  </svg>
+                </button>
               </div>
             </div>
 
