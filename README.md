@@ -20,7 +20,7 @@ Sistema escalável de cardápio digital e automação de logística para marmita
 * **Logística Automatizada & Triagem de Cozinha:** Integração robusta via WhatsApp com payload segmentado e estruturado. O sistema separa automaticamente **Combos Montados** de **Marmitas Avulsas**, otimizando a esteira de produção da cozinha sem o uso de caracteres especiais ou emojis que quebram leitores de dados.
 * **Sanitização com Regex:** Filtros em tempo real para CPF (11 dígitos limitados), CEP e Telefone, garantindo integridade total dos dados antes do envio.
 * **Performance & UX:** Interface *Mobile-First*, persistência de estado do carrinho com *LocalStorage* (evitando perda de dados em reloads), busca local por prato/ingrediente, cards compactos, controles centralizados, feedbacks visuais e harmonia de grid com `items-stretch`.
-* **Integridade Nutricional:** Tabelas nutricionais vinculadas pelo `id` canônico do produto, evitando associação incorreta entre pratos visualmente parecidos ou códigos legados.
+* **Integridade Nutricional:** Tabelas nutricionais vinculadas pelo `id` canônico do produto, preservando a porção e os valores validados por nutricionista.
 * **Gramagem Obrigatória:** Seleção explícita de 300g ou 450g para marmitas avulsas e combos, com preço próprio por tamanho, itens separados no carrinho e gramagem enviada no pedido final.
 * **Arquitetura Profissional:** Tipagem estrita com TypeScript, componentização limpa e gestão de estado global centralizada via Context API (`CartContext`).
 * **Design System Simples:** Classes utilitárias reutilizáveis para cards, botões, inputs, estados vazios e títulos de seção, reduzindo inconsistência visual entre cardápio, carrinho e checkout.
@@ -48,7 +48,7 @@ Sistema escalável de cardápio digital e automação de logística para marmita
 * **Feedback de Interação:** Toast discreto com transparência e fade-out para confirmar adição ou atualização de itens sem interromper o fluxo de compra.
 * **Resumo Fixo Mobile:** Barra inferior com quantidade de itens, total do pedido e ação rápida para acessar o carrinho em telas pequenas.
 * **Fluxo de Combo Aprimorado:** Modal com seleção obrigatória de gramagem, busca interna, barra de progresso, contagem de itens selecionados e destaque visual para marmitas já escolhidas.
-* **Tabela Nutricional Contextual:** Exibição sob demanda por clique, painel compacto no mobile, overlay sobre o card no desktop, fechamento por botão dedicado ou clique fora e título completo do prato sem truncamento.
+* **Tabela Nutricional Contextual:** Exibição sob demanda por clique, painel compacto no mobile, aba lateral no desktop, fechamento por botão dedicado ou clique fora e título completo do prato sem truncamento.
 * **Design de Interface:** Sticky Footer para conversão no mobile, componentes responsivos, espaçamento visual controlado, grid padronizado, imagens com recorte consistente e ícones SVG alinhados ao visual do produto.
 * **Carrinho e Checkout Refinados:** Carrinho com estado vazio profissional, itens em cards internos, composição de combos organizada e checkout dividido em Dados pessoais, Entrega e Pagamento.
 
@@ -73,6 +73,19 @@ Sistema escalável de cardápio digital e automação de logística para marmita
 * Os nomes dos produtos com tabela nutricional foram padronizados para refletir o nome completo do prato.
 * Registros nutricionais sem produto correspondente foram removidos para evitar dados órfãos.
 * Pratos sem dados nutricionais confiáveis permanecem sem link de informação nutricional até validação da tabela oficial.
+
+---
+
+## Auditoria de Design, Performance e Otimização
+
+* **Design mais compacto e alinhado:** Cards revisados para aproveitar melhor o espaço em mobile e desktop, com preço, gramagem e controles de quantidade na mesma linha de decisão de compra.
+* **Controles visualmente estáveis:** Botões de menos e mais usam dimensões fixas, `flex`, centralização explícita e ícones SVG, evitando desalinhamento entre estados, telas e densidades de pixel.
+* **Bordas e imagens sob controle:** O card mantém `overflow-hidden` no bloco visual e a tabela nutricional abre fora desse recorte, preservando cantos arredondados, imagem consistente e aba lateral sem transbordamento.
+* **Performance preservada:** Checkout e montagem de combo continuam carregados sob demanda com `lazy`/`Suspense`, reduzindo o peso inicial do cardápio.
+* **Carregamento de imagem otimizado:** Os primeiros cards recebem prioridade de carregamento e os demais usam `loading="lazy"`, `decoding="async"` e dimensões declaradas para reduzir saltos visuais.
+* **Sem dependências desnecessárias:** A solução mantém apenas as dependências essenciais de produção (`react`, `react-dom` e `react-router-dom`).
+* **CSS enxuto na auditoria local:** A folha gerada pelo Tailwind ficou em aproximadamente 29 KB minificada para o escopo atual da interface.
+* **Validação automatizada:** `npm run quality` verifica tipagem, regras de preço por gramagem, exigência de tamanho no carrinho, separação de itens por gramagem e pontos estruturais de performance.
 
 ---
 

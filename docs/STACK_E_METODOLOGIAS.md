@@ -120,7 +120,7 @@ As regras de gramagem e preço ficam centralizadas em `src/utils/tamanhos.ts`, e
 * Cards com `h-full`, `flex flex-col` e `mt-auto` para manter rodapés alinhados.
 * Tipografia ajustada para preservar nomes completos sem tornar o card excessivamente alto.
 * Breakpoints usados para alternar entre card horizontal no mobile e card vertical em telas maiores.
-* Tabela nutricional com painel compacto no mobile e overlay interno no desktop.
+* Tabela nutricional com painel compacto no mobile e aba lateral no desktop.
 
 ### Checkout e Produção
 

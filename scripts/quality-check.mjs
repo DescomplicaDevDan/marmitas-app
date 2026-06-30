@@ -10,8 +10,8 @@ function assert(condition, message) {
   }
 }
 
-async function loadTamanhosModule() {
-  const source = await readFile(join(root, 'src/utils/tamanhos.ts'), 'utf8');
+async function loadTsModule(relativePath) {
+  const source = await readFile(join(root, relativePath), 'utf8');
   const transpiled = ts.transpileModule(source, {
     compilerOptions: {
       module: ts.ModuleKind.ESNext,
@@ -23,7 +23,7 @@ async function loadTamanhosModule() {
   return import(moduleUrl);
 }
 
-const { getOpcoesTamanho } = await loadTamanhosModule();
+const { getOpcoesTamanho } = await loadTsModule('src/utils/tamanhos.ts');
 
 const marmitaAvulsa = {
   id: '1',

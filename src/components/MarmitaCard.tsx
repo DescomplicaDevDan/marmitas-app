@@ -22,6 +22,7 @@ export function MarmitaCard({
   const { addToCart, cart, updateQuantity } = useCart();
   const [isPinned, setIsPinned] = useState(false);
   const [tamanhoSelecionado, setTamanhoSelecionado] = useState<TamanhoMarmita | null>(null);
+  const [tabelaDesktopSide, setTabelaDesktopSide] = useState<'left' | 'right'>('right');
   const cardRef = useRef<HTMLDivElement>(null);
   const seletorTamanhoRef = useRef<HTMLDivElement>(null);
   const controleQuantidadeRef = useRef<HTMLDivElement>(null);
@@ -108,22 +109,37 @@ export function MarmitaCard({
     }
   };
 
+  const handleAbrirTabelaNutricional = () => {
+    const cardRect = cardRef.current?.getBoundingClientRect();
+
+    if (cardRect) {
+      const larguraTabelaDesktop = 420;
+      const espacoDisponivelDireita = window.innerWidth - cardRect.right;
+      setTabelaDesktopSide(espacoDisponivelDireita >= larguraTabelaDesktop ? 'right' : 'left');
+    }
+
+    setIsPinned(true);
+  };
+
   return (
-    <div ref={cardRef} className={`font-sans shadow-sm border overflow-hidden hover:shadow-md transition-all relative flex flex-row self-start sm:h-full sm:self-stretch sm:flex-col gap-2 sm:gap-0 rounded-2xl p-2 sm:p-0 ${
-      isNoCarrinho ? 'bg-[#f7fbf4] border-[#7cb151] ring-1 ring-[#7cb151]/25' : 'bg-white'
-    } ${
-      isCombo && !isNoCarrinho ? 'border-[#7cb151] ring-1 ring-[#7cb151]/20' : ''
-    } ${
-      !isCombo && !isNoCarrinho ? 'border-gray-100' : ''
-    }`}>
+    <div ref={cardRef} className="relative self-start font-sans sm:h-full sm:self-stretch">
       <TabelaNutricional
         prato={pratoNutricional}
         isVisible={Boolean(pratoNutricional && isPinned)}
         isPinned={isPinned}
+        desktopSide={tabelaDesktopSide}
         onClose={() => {
           setIsPinned(false);
         }}
       />
+
+      <div className={`shadow-sm border overflow-hidden hover:shadow-md transition-all flex flex-row sm:h-full sm:flex-col gap-2 sm:gap-0 rounded-2xl p-2 sm:p-0 ${
+        isNoCarrinho ? 'bg-[#f7fbf4] border-[#7cb151] ring-1 ring-[#7cb151]/25' : 'bg-white'
+      } ${
+        isCombo && !isNoCarrinho ? 'border-[#7cb151] ring-1 ring-[#7cb151]/20' : ''
+      } ${
+        !isCombo && !isNoCarrinho ? 'border-gray-100' : ''
+      }`}>
 
       
       {/* Selo Amarelo "GANHE" */}
@@ -184,7 +200,7 @@ export function MarmitaCard({
                 {pratoNutricional && (
                   <button
                     type="button"
-                    onClick={() => setIsPinned(true)}
+                    onClick={handleAbrirTabelaNutricional}
                     className="block truncate text-left text-[9px] font-medium text-green-600 transition-all hover:text-green-700 hover:underline sm:text-xs"
                   >
                     Ver info nutricional
@@ -276,6 +292,7 @@ export function MarmitaCard({
             </button>
           </div>
         )}
+      </div>
       </div>
     </div>
   );
