@@ -90,6 +90,10 @@ Os testes Playwright exercitam a interface em 1440 × 900 e 390 × 844. O WhatsA
 
 Ferramentas de IA foram utilizadas como apoio à pesquisa, prototipação, revisão e documentação. Os testes e as limitações estão descritos neste repositório para permitir a avaliação das entregas.
 
+## Desenvolvimento individual
+
+Trabalhei sozinho no desenvolvimento deste projeto, sem uma equipe de desenvolvimento.
+
 ## Autor
 
 [Danilo Texeira](https://github.com/DescomplicaDevDan) · [LinkedIn](https://www.linkedin.com/in/danilo-texeira-dev/)
