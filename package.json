@@ -8,7 +8,8 @@
     "typecheck": "tsc --noEmit",
     "quality": "npm run typecheck && node scripts/quality-check.mjs",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -16,6 +17,7 @@
     "react-router-dom": "^7.17.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",

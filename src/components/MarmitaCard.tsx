@@ -74,10 +74,10 @@ export function MarmitaCard({
       setTamanhoSelecionado(null);
     };
 
-    document.addEventListener('mousedown', handleClickForaGramagem);
+    document.addEventListener('click', handleClickForaGramagem);
 
     return () => {
-      document.removeEventListener('mousedown', handleClickForaGramagem);
+      document.removeEventListener('click', handleClickForaGramagem);
     };
   }, [tamanhoSelecionado]);
 
