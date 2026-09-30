@@ -4,6 +4,8 @@ Aplicação freelance de front-end para consultar marmitas, montar combos e prep
 
 [Ver aplicação](https://www.nutricomp.com.br/) · [Cenários de teste e evidências](docs/VALIDACAO.md)
 
+[Case técnico: arquitetura, regras e decisões](docs/CASE.md)
+
 ## Problema e escopo
 
 O projeto organiza a seleção de produtos e aplica regras de gramagem, quantidade e preço antes do atendimento pelo WhatsApp. O cliente monta o pedido na interface e recebe uma mensagem preenchida para enviar.
@@ -38,7 +40,7 @@ A aplicação não envia mensagens automaticamente, não usa a API do WhatsApp, 
 
 ## Executar localmente
 
-Use Node.js 22 LTS e npm.
+Use Node.js 22.12 ou superior na linha 22 LTS e npm.
 
 ```bash
 git clone https://github.com/DescomplicaDevDan/marmitas-app.git
